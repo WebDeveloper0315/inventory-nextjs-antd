@@ -1,0 +1,27 @@
+.loader-parent {
+    position: fixed;
+    inset: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999 !important;
+}
+
+.loader {
+    height: 60px;
+    width: 60px;
+    border: 5px solid #FFF;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
