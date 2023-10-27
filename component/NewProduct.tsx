@@ -51,7 +51,7 @@ function NewProductRegister() {
 
     return (
         <div>
-            <PageTitle title='New Product' />
+            {/* <PageTitle title='New Product' /> */}
             <Form
                 layout='vertical'
                 onFinish={onFinish}

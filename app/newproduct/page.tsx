@@ -1,9 +1,25 @@
+'use client'
 import PageTitle from '@/component/PageTitle'
 import { Button, Col, Row } from 'antd'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
+import NewProductRegister from '@/component/NewProduct'
+import NewUnits from '@/component/NewUnits'
 
 function NewProduct() {
+  const [showRegister, setShowRegister] = useState(false);
+  const [showUnits, setShowUnits] = useState(false);
+
+  const handleNewButtonClick = () => {
+    setShowRegister(true);
+    setShowUnits(false);
+  };
+
+  const handleUnitsButtonClick = () => {
+    setShowRegister(false);
+    setShowUnits(true);
+  };
+
   return (
     <div>
       <PageTitle title='New Product'/>
@@ -13,19 +29,23 @@ function NewProduct() {
 
           </Col>
           <Col span={8}>
-            <Button type='primary' block>
-              <i className="ri-add-line">&nbsp;Units</i>
-            </Button>       
+            
+              <Button type='primary' block onClick={handleUnitsButtonClick}>
+                <i className="ri-add-line">&nbsp;Units</i>
+              </Button>  
+               
           </Col>
           <Col span={8}>
-            <Link href="/newproduct/new">
-              <Button type='primary' block>
+            
+              <Button type='primary' block onClick={handleNewButtonClick}>
                 <i className="ri-file-list-3-line">&nbsp;New</i>
               </Button>  
-            </Link>     
+            
           </Col>
         </Row>
       </div>
+      {showRegister && <NewProductRegister />}
+      {showUnits && <NewUnits />}
       
     </div>
   )
