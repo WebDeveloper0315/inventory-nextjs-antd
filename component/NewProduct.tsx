@@ -22,26 +22,44 @@ function NewProductRegister() {
     };
 
     
-    const onFinish = async(values: any) => {
+    const onFinish = async (values: any) => {
         try {
             dispatch(SetLoading(true))
-            
-            // if(productImage){
-            //     const formData = new FormData();
-            //     formData.append('image', productImage)
-            //     // I need to save the image file to the server.
-            //     // Location: /public/image
-            //     const resImage = await axios.post('/api/products/saveImage', formData, {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //         },
-            //     })
-            // }
+            delete values.image
+            console.log('before get api ',values)
 
-            // console.log(values)
-            const response = await axios.post('/api/products/register', values)
-            message.success(response.data.message)
-            // router.push("/")
+            const isExist = await axios.get(`/api/products/register?productCode=${values.code}`)
+
+            console.log(isExist)
+
+            if(isExist.status == 200 && productImage){
+                const formData = new FormData()
+                formData.append('image', productImage)
+
+                const resImage = await fetch('/api/products/saveImage', {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                if (resImage.ok) {
+                    const responseData = await resImage.json()
+                    const finalFilePath = responseData.httpfilepath
+
+                    values.imagePath = finalFilePath
+                    delete values.image
+                    const response = await axios.post('/api/products/register', values)
+                    message.success(response.data.message)
+                } else {
+                    // Handle the case when the response is not ok
+                    console.error('Error while uploading the image');
+                }
+                console.log('resImage', resImage)
+            }
+            else if(isExist.status == 201)
+            {
+                message.info('Selected Product exists. Try again!')
+            }
+
         } catch (error: any) {
             message.error(error.response.data.message || 'Something went wrong')
         } finally {

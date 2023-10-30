@@ -53,7 +53,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
             const isAddUser = response.data.data.addUser === true
             dispatch(SetCurrentUser(response.data.data))
 
-            console.log('isSold', isSold)
+            // console.log('isSold', isSold)
             if (isNewProduct) {
                 const tempMenuItems = menuItems
                 tempMenuItems[pos].name = 'New Product'
@@ -62,7 +62,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 setMenuItems(tempMenuItems)
                 pos = pos + 1
             }
-            console.log(pos)
+            // console.log(pos)
             if (isSold) {
                 const tempMenuItems = menuItems
                 tempMenuItems[pos].name = 'Sold'
@@ -71,7 +71,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 setMenuItems(tempMenuItems)
                 pos = pos + 1
             }
-            console.log(pos)
+            // console.log(pos)
             if (isQuery) {
                 const tempMenuItems = menuItems
                 tempMenuItems[pos].name = 'Query'

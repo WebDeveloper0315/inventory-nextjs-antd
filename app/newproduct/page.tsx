@@ -4,7 +4,7 @@ import { Button, Col, Row } from 'antd'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import NewProductRegister from '@/component/NewProduct'
-import NewUnits from '@/component/NewUnits'
+import BuyingUnits from '@/component/BuyingUnits'
 
 function NewProduct() {
   const [showRegister, setShowRegister] = useState(false);
@@ -45,7 +45,7 @@ function NewProduct() {
         </Row>
       </div>
       {showRegister && <NewProductRegister />}
-      {showUnits && <NewUnits />}
+      {showUnits && <BuyingUnits />}
       
     </div>
   )

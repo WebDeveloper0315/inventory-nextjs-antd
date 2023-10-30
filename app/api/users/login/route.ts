@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     //check if user exists
     const user = await User.findOne({ name: reqBody.name });
-    console.log(reqBody.name)
+    // console.log(reqBody.name)
     if (!user) {
       throw new Error("User does not exists");
     }
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     };
 
     const token = jwt.sign(dataToBeSigned, process.env.jwt_secret!, {
-      expiresIn: "1d",
+      expiresIn: "1h",
     });
 
     const response = NextResponse.json({message: "Login successful"}, {status: 200})
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     //set cookie
     response.cookies.set("token", token, {
         httpOnly: true,
-        maxAge: 60 * 60  * 1000 * 24, //1 hour
+        maxAge: 60 * 60  * 1000 , //1 hour
     })
 
     return response

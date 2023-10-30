@@ -1,6 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers'
 
 
 export const validateJWT = async (request: NextRequest) => {
@@ -15,7 +16,8 @@ export const validateJWT = async (request: NextRequest) => {
 
         return decodedData.userId
     } catch (error: any) {
-        
-        throw new Error('error.message')
+        cookies().delete('token')
+        // request.cookies.delete('token') // I need to update
+        // throw new Error('error.message')
     }
 }

@@ -11,14 +11,14 @@ const productSchema = new mongoose.Schema(
         required: true,
     } ,
     disposableUnits: {
-        type: String,
+        type: Number,
         required: true,
     },
     pricePerUnit: {
         type: Number,
         required: true,
     },
-      location: {
+    location: {
         type: String,
         required: true,
     },
