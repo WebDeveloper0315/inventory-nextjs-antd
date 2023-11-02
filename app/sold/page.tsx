@@ -26,10 +26,10 @@ function Sold() {
   const handleSubmit = async (code: string) => {
     try {
         dispatch(SetLoading(true))
+        const encodedCode = encodeURIComponent(code)
+        const response = await axios.get(`api/products/check?code=${encodedCode}`)
 
-        const response = await axios.get(`api/products/check?code=${code}`)
-
-        const url = response.data.data.productImage
+        const url = response.data?.data?.productImage
         setImageUrl(url)
         setAddUnits(false)
     } catch (error: any) {

@@ -44,6 +44,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
     const getCurrentUser = async () => {
         try {
             dispatch(SetLoading(true))
+            
             const response = await axios.get("/api/users/currentuser")
             let pos: number = 0
 
@@ -87,6 +88,17 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 tempMenuItems[pos].icon = "ri-user-add-line"
                 setMenuItems(tempMenuItems)
                 pos = pos + 1
+            }
+
+            if(pos < 4){
+                while(pos < 4){
+                    const tempMenuItems = menuItems
+                    tempMenuItems[pos].name = ''
+                    tempMenuItems[pos].path = ''
+                    tempMenuItems[pos].icon = ''
+                    setMenuItems(tempMenuItems)
+                    pos = pos + 1
+                }
             }
 
         } catch (error: any) {

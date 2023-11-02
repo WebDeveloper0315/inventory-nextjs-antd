@@ -15,11 +15,11 @@ function NewUnits() {
             dispatch(SetLoading(true))
             // Perform the product code check here
             //   const productCode = values?.target?.value || '';
+            const encodedCode = encodeURIComponent(code)
+            const response = await axios.get(`api/products/check?code=${encodedCode}`)
 
-            const response = await axios.get(`api/products/check?code=${code}`)
-
-            const url = response.data.data.productImage
-            console.log(url)
+            const url = response.data?.data?.productImage
+            console.log('URL ', response)
 
             setImageUrl(url)
             setAddUnits(false)
@@ -45,7 +45,8 @@ function NewUnits() {
     const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            handleSubmit(event.currentTarget.value)
+            const code = (event.currentTarget as HTMLInputElement).value
+            handleSubmit(code)
         }
     }
 

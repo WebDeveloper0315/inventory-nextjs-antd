@@ -15,6 +15,7 @@ function GeneralGraph() {
   const router = useRouter()
   const [graphData, setGraphData] = useState([])
   const [tableData, setTableData] = useState<any[]>([])
+  Chart.register(CategoryScale)
 
   const fetchGraphData = async () => {
     try {

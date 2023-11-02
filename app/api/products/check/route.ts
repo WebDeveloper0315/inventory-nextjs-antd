@@ -7,7 +7,7 @@ connectDB();
 export async function GET(request: NextRequest) {
     // I need to analyse the request.
     const productCode = request.nextUrl.searchParams.get('code')
-    console.log(productCode)
+    console.log('Product Code: ', productCode)
     try {
         // Find the product in MongoDB using the product code
         const product = await Product.findOne({ productCode: productCode });
@@ -16,12 +16,16 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({
                 message: "Product not found!", 
                 data: '',
+            }, {
+                status: 200
             })
         }
 
         return NextResponse.json({
             message: 'Product data fetched successfully',
             data: product,
+          }, {
+            status: 201
           })
         
     } catch (error: any) {

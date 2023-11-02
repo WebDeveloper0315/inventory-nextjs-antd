@@ -16,10 +16,10 @@ function OneGraph() {
         try {
             dispatch(SetLoading(true))
             setQueryCode(code)
+            const encodedCode = encodeURIComponent(code)
+            const response = await axios.get(`api/products/check?code=${encodedCode}`)
 
-            const response = await axios.get(`api/products/check?code=${code}`)
-
-            const url = response.data.data.productImage
+            const url = response.data?.data?.productImage
             setImageUrl(url)
         } catch (error: any) {
             message.error(error.response?.data?.message || 'Something went wrong')
