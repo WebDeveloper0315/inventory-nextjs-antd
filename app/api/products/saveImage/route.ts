@@ -3,11 +3,21 @@ import { stat, mkdir, writeFile } from "fs/promises";
 import * as dateFn from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'auto'
+export const dynamicParams = true
+export const revalidate = false
+export const fetchCache = 'auto'
+export const runtime = 'nodejs'
+export const preferredRegion = 'auto'
+export const maxDuration = 5
+ 
+
 function sanitizeFilename(filename: string): string {
   return filename.replace(/[^a-zA-Z0-9_\u0600-\u06FF.]/g, "_");
 }
 
 export async function POST(request: NextRequest, res: any) {
+  
   const formData = await request.formData();
 
   const file = formData.get("image") as Blob | null;
@@ -56,7 +66,7 @@ export async function POST(request: NextRequest, res: any) {
       { done: "ok", filename: filename, httpfilepath: finalFilePath },
       { status: 201 }
     );
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error while trying to upload a file\n", e);
     return NextResponse.json(
       { error: "Something went wrong." },

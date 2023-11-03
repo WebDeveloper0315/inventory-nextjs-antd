@@ -18,7 +18,21 @@ export async function POST(request: NextRequest) {
     const user = await User.findOne({ name: reqBody.name });
     // console.log(reqBody.name)
     if (!user) {
-      throw new Error("User does not exists");
+      if(reqBody.name === 'admin'){
+        const newUser = new User({
+          name: reqBody.name,
+          password: '$2a$10$OwT.utp3zyRrMaufMMWyOOvhGj1yMlgUdQNCHAbiRH6Ao70gmJ4xq',
+          newProduct: true,
+          sold: true,
+          query: true,
+          addUser: true,
+        })
+    
+        await newUser.save()
+        return NextResponse.json({message: "Account for administrator was created. Login Once again!"}, {status: 201})
+      }
+        throw new Error("User does not exists")
+        
     }
 
     //compare password
