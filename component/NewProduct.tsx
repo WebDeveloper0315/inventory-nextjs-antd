@@ -26,24 +26,26 @@ function NewProductRegister() {
         try {
             dispatch(SetLoading(true))
             delete values.image
-            console.log('before get api ',values)
+            // console.log('before get api ',values)
 
             const isExist = await axios.get(`/api/products/register?productCode=${values.code}`)
 
-            console.log(isExist)
+            // console.log(isExist)
 
             if(isExist.status == 200 && productImage){
                 const formData = new FormData()
                 formData.append('image', productImage)
 
-                const resImage = await fetch('/api/products/saveImage', {
-                    method: 'POST',
-                    body: formData,
-                })
+                // const resImage = await fetch('/api/products/saveImage', {
+                //     method: 'POST',
+                //     body: formData,
+                // })
+                const resImage = await axios.post('/api/products/saveImage', formData)
 
-                if (resImage.ok) {
-                    const responseData = await resImage.json()
-                    const finalFilePath = responseData.httpfilepath
+                if (resImage.status === 201) {
+                    console.log('adadsf', resImage)
+                    // const responseData = await resImage.data.json()
+                    const finalFilePath = resImage.data.httpfilepath
 
                     values.imagePath = finalFilePath
                     delete values.image
@@ -61,11 +63,29 @@ function NewProductRegister() {
             }
 
         } catch (error: any) {
+            console.log(error)
             message.error(error.response.data.message || 'Something went wrong')
         } finally {
             dispatch(SetLoading(false))
         }
     }
+
+    // const onFinish = async (values: any) => {
+    //     try {
+    //         dispatch(SetLoading(true))
+    //         console.log('before get api ',values)
+
+    //         // const formData = new FormData()
+    //         // formData.append('image', productImage)
+
+    //         await axios.post('/api/products/saveImage', values)
+
+    //     } catch (error: any) {
+    //         message.error(error.response.data.message || 'Something went wrong')
+    //     } finally {
+    //         dispatch(SetLoading(false))
+    //     }
+    // }
 
     return (
         <div>

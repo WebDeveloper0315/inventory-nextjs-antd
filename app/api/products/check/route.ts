@@ -2,7 +2,7 @@ import { connectDB } from "@/config/dbConfig"
 import { NextRequest, NextResponse } from "next/server"
 import Product from "@/models/productModel";
 
-connectDB();
+connectDB()
 
 export async function GET(request: NextRequest) {
     // I need to analyse the request.

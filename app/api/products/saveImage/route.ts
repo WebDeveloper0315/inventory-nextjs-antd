@@ -2,25 +2,21 @@ import { extname, join } from "path";
 import { stat, mkdir, writeFile } from "fs/promises";
 import * as dateFn from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
+import { validateJWT } from "@/helpers/validateJWT";
 
-export const dynamic = 'auto'
-export const dynamicParams = true
-export const revalidate = false
-export const fetchCache = 'auto'
 export const runtime = 'nodejs'
-export const preferredRegion = 'auto'
-export const maxDuration = 5
- 
+
 
 function sanitizeFilename(filename: string): string {
   return filename.replace(/[^a-zA-Z0-9_\u0600-\u06FF.]/g, "_");
 }
 
-export async function POST(request: NextRequest, res: any) {
+export async function POST(request: NextRequest) {
+  // await validateJWT(request)
   
   const formData = await request.formData();
 
-  const file = formData.get("image") as Blob | null;
+  const file = formData.get("image") as any | null;
   if (!file) {
     return NextResponse.json(
       { error: "File blob is required." },
@@ -53,15 +49,15 @@ export async function POST(request: NextRequest, res: any) {
 
   try {
     const uniqueSuffix = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
-    const fileExtension = extname(file.name);
-    const originalFilename = file.name.replace(/\.[^/.]+$/, "");
+    const fileExtension = extname(file?.name);
+    const originalFilename = file?.name.replace(/\.[^/.]+$/, "");
     const sanitizedFilename = sanitizeFilename(originalFilename);
     const filename = `${sanitizedFilename}_${uniqueSuffix}${fileExtension}`;
     console.log('filename : ' + filename);
     await writeFile(`${pathDist}/${filename}`, buffer);
 
     const finalFilePath = 'productImage/' + `${filename}`;
-    res = finalFilePath;
+    // res = finalFilePath;
     return NextResponse.json(
       { done: "ok", filename: filename, httpfilepath: finalFilePath },
       { status: 201 }
