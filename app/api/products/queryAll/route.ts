@@ -50,9 +50,9 @@ export async function GET(request: NextRequest) {
                     totSellUnits[productCode] += units
 
                 if(!totTaxes[productCode])
-                    totTaxes[productCode] = taxes / 100 * pricePerUnit * units
+                    totTaxes[productCode] = taxes  * pricePerUnit * units / 100
                 else
-                    totTaxes[productCode] += taxes / 100 * pricePerUnit * units                
+                    totTaxes[productCode] += taxes * pricePerUnit * units / 100               
             }
         })
         let avgBuyPrice: any = {}
