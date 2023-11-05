@@ -13,7 +13,7 @@ function GeneralGraph() {
 
   const dispatch = useDispatch()
   const router = useRouter()
-  const [graphData, setGraphData] = useState([])
+  const [graphData, setGraphData] = useState<any>([])
   const [tableData, setTableData] = useState<any[]>([])
   Chart.register(CategoryScale)
 
@@ -73,11 +73,11 @@ function GeneralGraph() {
 
         <div>
           <h2>Bar Graph - Profit Per Code</h2>
-          <BarGraph data={graphData.profitCode} />
+          <BarGraph data={graphData?.profitCode} />
         </div>
         <div>
           <h2>Bar Graph - Profit Per Market</h2>
-          <BarGraph data={graphData.profitMarket} />
+          <BarGraph data={graphData?.profitMarket} />
         </div>
 
     </div>
