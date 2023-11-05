@@ -84,17 +84,19 @@ export async function GET(request: NextRequest) {
         graphData.forEach((item) => {
             const { productCode, mode, pricePerUnit, units, market, taxes } = item
             if(mode === 'selling'){
-                const profit = ((1 - taxes / 100) * pricePerUnit - avgBuyPrice[productCode]) * units
-                if(!profitCode[productCode])
-                    profitCode[productCode] = profit
-                else
-                    profitCode[productCode] += profit
-                allProfit += profit
+                if(taxes !== undefined){
+                    const profit = ((1 - taxes / 100) * pricePerUnit - avgBuyPrice[productCode]) * units
+                    if(!profitCode[productCode])
+                        profitCode[productCode] = profit
+                    else
+                        profitCode[productCode] += profit
+                    allProfit += profit
 
-                if(!profitMarket[market])
-                    profitMarket[market] = profit
-                else
-                    profitMarket[market] += profit
+                    if(!profitMarket[market])
+                        profitMarket[market] = profit
+                    else
+                        profitMarket[market] += profit
+                }
             }
         })
 
