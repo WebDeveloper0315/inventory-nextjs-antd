@@ -13,7 +13,7 @@ function sanitizeFilename(filename: string): string {
 
 export async function POST(request: NextRequest) {
   // await validateJWT(request)
-  
+  //console.log(request.text())
   const formData = await request.formData();
 
   const file = formData.get("image") as any | null;
