@@ -91,11 +91,13 @@ export async function GET(request: NextRequest) {
                     else
                         profitCode[productCode] += profit
                     allProfit += profit
-
-                    if(!profitMarket[market])
-                        profitMarket[market] = profit
-                    else
-                        profitMarket[market] += profit
+                    
+                    if(market !== undefined){
+                        if(!profitMarket[market])
+                            profitMarket[market] = profit
+                        else
+                            profitMarket[market] += profit
+                    }
                 }
             }
         })
