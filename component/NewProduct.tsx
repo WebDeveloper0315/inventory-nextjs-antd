@@ -1,12 +1,12 @@
 'use client'
-import React, { useState } from 'react';
-import { Upload, Button, Input, Form, message } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
-import PageTitle from '@/component/PageTitle';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { SetLoading } from '@/redux/loadersSlice';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+import { Upload, Button, Input, Form, message } from 'antd'
+import { InboxOutlined } from '@ant-design/icons'
+import PageTitle from '@/component/PageTitle'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { SetLoading } from '@/redux/loadersSlice'
+import { useRouter } from 'next/navigation'
 
 const { Dragger } = Upload;
 
@@ -63,7 +63,7 @@ function NewProductRegister() {
             }
 
         } catch (error: any) {
-            console.log(error)
+            console.log('error during product registering', error)
             message.error(error.response.data.message || 'Something went wrong')
         } finally {
             dispatch(SetLoading(false))

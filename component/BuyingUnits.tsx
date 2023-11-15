@@ -109,6 +109,7 @@ function NewUnits() {
                                     <Image
                                         src={imageUrl}
                                         className='w-auto'
+                                        alt='Product Image'
                                     />
                                 </div>
                                 <div className='flex flex-row items-center'>

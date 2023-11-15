@@ -44,7 +44,7 @@ function GeneralGraph() {
 
   React.useEffect(() => {
     fetchGraphData()
-  }, [])
+  })
 
   const columns = [
     {

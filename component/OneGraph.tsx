@@ -125,7 +125,7 @@ function OneGraph() {
                                     <p>Is this product?</p>
                                     <Image
                                         src={imageUrl}
-                                        
+                                        alt='Product Image'
                                     />
                                 </div>
                                 <div className='flex flex-row items-center'>
