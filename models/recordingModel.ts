@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const recordingSchema = new mongoose.Schema(
   {
@@ -32,12 +32,12 @@ const recordingSchema = new mongoose.Schema(
   }
 );
 
-//delete old model
+// delete old model
 if (mongoose.models.recordings) {
-  const recordingModel = mongoose.model('recordings');
+  const recordingModel = mongoose.model("recordings");
   mongoose.deleteModel(recordingModel.modelName);
 }
-//create new model
-const Recording = mongoose.model('recordings', recordingSchema);
+// create new model
+const Recording = mongoose.model("recordings", recordingSchema);
 
 export default Recording;

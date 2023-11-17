@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -16,9 +16,9 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     sold: {
-        type: Boolean,
-        required: true,
-        default: false,
+      type: Boolean,
+      required: true,
+      default: false,
     },
     returning: {
       type: Boolean,
@@ -26,27 +26,27 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     query: {
-        type: Boolean,
-        required: true,
-        default: false,
+      type: Boolean,
+      required: true,
+      default: false,
     },
     addUser: {
-        type: Boolean,
-        required: true,
-        default: false,
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {
     timestamps: true,
   }
-)
+);
 
-//delete old model
+// delete old model
 if (mongoose.models.users) {
-  const userModel = mongoose.model('users')
-  mongoose.deleteModel(userModel.modelName)
+  const userModel = mongoose.model("users");
+  mongoose.deleteModel(userModel.modelName);
 }
-//create new model
-const User = mongoose.model('users', userSchema)
+// create new model
+const User = mongoose.model("users", userSchema);
 
-export default User
+export default User;

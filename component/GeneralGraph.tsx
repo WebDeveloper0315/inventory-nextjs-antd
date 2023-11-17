@@ -2,17 +2,14 @@
 import { SetLoading } from '@/redux/loadersSlice'
 import { Table, message } from 'antd'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Bar } from 'react-chartjs-2'
 import Chart, {CategoryScale} from 'chart.js/auto'
 import BarGraph from './BarGraph'
 
 function GeneralGraph() {
 
   const dispatch = useDispatch()
-  const router = useRouter()
   const [graphData, setGraphData] = useState<any>([])
   const [tableData, setTableData] = useState<any[]>([])
   Chart.register(CategoryScale)

@@ -1,5 +1,5 @@
 
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 
