@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import PageTitle from "@/component/PageTitle";
 import { Button, Form, Image, Input, Tooltip, message } from "antd";
 import React, { useState } from "react";
@@ -7,7 +7,8 @@ import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
 
-function Sold() {
+
+function Returning() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
   const [addUnits, setAddUnits] = useState(false);
@@ -50,9 +51,9 @@ function Sold() {
   const onFinish = async (values: any) => {
     try {
       dispatch(SetLoading(true));
-      console.log("SoldUnits.tsx onFinish", values);
+      console.log("returning.tsx onFinish", values);
       const response = await axios.post(
-        "api/products/recording?selling=1",
+        "api/products/recording?returning=1",
         values
       );
       console.log(response);
@@ -72,7 +73,7 @@ function Sold() {
 
   return (
     <div>
-      <PageTitle title="Sold" />
+      <PageTitle title="Return Item" />
       <div>
         <Form layout="vertical" onFinish={onFinish}>
           <div className="flex justify-center">
@@ -103,6 +104,7 @@ function Sold() {
                       src={imageUrl}
                       className="w-auto"
                       alt="Product Image"
+                      
                     />
                   </div>
                   <div className="flex flex-row items-center">
@@ -126,32 +128,19 @@ function Sold() {
                     {addUnits && (
                       <div>
                         <Form.Item
-                          label="Units Selling"
-                          name="units"
-                          className=" my-3 w-auto"
-                        >
-                          <Input placeholder="units to sell" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Price per Unit"
+                          label="Sell Price"
                           name="pricePerUnit"
                           className="my-3"
                         >
-                          <Input placeholder="Price per unit" />
+                          <Input placeholder="Sell Price" />
                         </Form.Item>
+
                         <Form.Item
-                          label="Market Place"
-                          name="market"
-                          className=" my-3 w-auto"
+                          label="Returning Number"
+                          name="units"
+                          className="my-3"
                         >
-                          <Input placeholder="Market Place" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Taxes(%)"
-                          name="taxes"
-                          className=" my-3 w-auto"
-                        >
-                          <Input placeholder="Tax" />
+                          <Input placeholder="Input the number to return" />
                         </Form.Item>
 
                         <Button
@@ -175,4 +164,4 @@ function Sold() {
   );
 }
 
-export default Sold;
+export default Returning;

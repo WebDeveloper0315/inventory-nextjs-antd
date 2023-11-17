@@ -7,6 +7,7 @@ import './../styles/antdOverride.css'
 import './../styles/commonClasses.css'
 import './../styles/layout.css'
 import './../styles/loader.css'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 

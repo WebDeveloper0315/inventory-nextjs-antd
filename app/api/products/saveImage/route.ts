@@ -1,11 +1,8 @@
 import { extname, join } from "path";
 import { stat, mkdir, writeFile } from "fs/promises";
-import * as dateFn from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
-import { validateJWT } from "@/helpers/validateJWT";
 
-export const runtime = 'nodejs'
-
+export const runtime = "nodejs";
 
 function sanitizeFilename(filename: string): string {
   return filename.replace(/[^a-zA-Z0-9_\u0600-\u06FF.]/g, "_");
@@ -13,7 +10,7 @@ function sanitizeFilename(filename: string): string {
 
 export async function POST(request: NextRequest) {
   // await validateJWT(request)
-  //console.log(request.text())
+  // console.log(request.text())
   const formData = await request.formData();
 
   const file = formData.get("image") as any | null;
@@ -52,14 +49,14 @@ export async function POST(request: NextRequest) {
     const fileExtension = extname(file?.name);
     const originalFilename = file?.name.replace(/\.[^/.]+$/, "");
     const sanitizedFilename = sanitizeFilename(originalFilename);
-    const filename = `${sanitizedFilename}_${uniqueSuffix}${fileExtension}`;
-    console.log('filename : ' + filename);
-    await writeFile(`${pathDist}/${filename}`, buffer);
+    const fileExtName = `${sanitizedFilename}_${uniqueSuffix}${fileExtension}`;
+    console.log("filename : " + fileExtName);
+    await writeFile(`${pathDist}/${fileExtName}`, buffer);
 
-    const finalFilePath = 'productImage/' + `${filename}`;
+    const finalFilePath = "productImage/" + `${fileExtName}`;
     // res = finalFilePath;
     return NextResponse.json(
-      { done: "ok", filename: filename, httpfilepath: finalFilePath },
+      { done: "ok", filename: fileExtName, httpfilepath: finalFilePath },
       { status: 201 }
     );
   } catch (e: any) {

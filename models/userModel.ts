@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
         required: true,
         default: false,
     },
+    returning: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     query: {
         type: Boolean,
         required: true,

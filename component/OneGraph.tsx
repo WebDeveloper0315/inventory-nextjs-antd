@@ -1,6 +1,6 @@
 import { Button, Form, Image, Input, Table, Tooltip, message } from 'antd'
 import React, { useState } from 'react'
-import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
 import { SetLoading } from '@/redux/loadersSlice'
 import axios from 'axios'
@@ -8,7 +8,6 @@ import axios from 'axios'
 function OneGraph() {
     const dispatch = useDispatch()
     const [imageUrl, setImageUrl] = useState('')
-    const [productData, setProductData] = useState([])
     const [tableData, setTableData] = useState<any[]>([])
     const [queryCode, setQueryCode] = useState('')
 
@@ -30,10 +29,6 @@ function OneGraph() {
 
     const [addUnits, setAddUnits] = useState(false)
 
-    const onShowUnits = () => {
-        setAddUnits(true)
-    }
-
     const onHideUnits = () => {
         setAddUnits(false)
         setImageUrl('')
@@ -45,15 +40,6 @@ function OneGraph() {
             event.preventDefault();
             handleSubmit(event.currentTarget.value);
         }
-    }
-
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Add any additional logic here
-    }
-
-    const onHideBuyingUnits = () => {
-        setImageUrl('')
     }
 
     const onFinish = async () => {

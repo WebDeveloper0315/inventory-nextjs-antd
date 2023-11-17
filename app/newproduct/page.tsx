@@ -1,7 +1,6 @@
 'use client'
 import PageTitle from '@/component/PageTitle'
 import { Button, Col, Row } from 'antd'
-import Link from 'next/link'
 import React, { useState } from 'react'
 import NewProductRegister from '@/component/NewProduct'
 import BuyingUnits from '@/component/BuyingUnits'

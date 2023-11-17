@@ -16,19 +16,24 @@ export async function POST(request: NextRequest) {
 
         const selling = searchParams.get('selling')
         console.log('selling parameter ', selling)
+
+        const returning = searchParams.get('returning')
+        console.log('selling parameter ', returning)
         
         const reqBody = await request.json()
         console.log('recording/route.ts', reqBody)
         
-        let mode = ''
-        let market = ''
+        let modeString = ''
+        let marketString = ''
         let tax = 0
         if (buying) {
-            mode = 'buying'
+            modeString = 'buying'
         } else if (selling) {
-            mode = 'selling'
-            market = reqBody.market
+            modeString = 'selling'
+            marketString = reqBody.market
             tax = reqBody.taxes
+        } else if(returning) {
+            modeString = 'returning'
         }
         
         
@@ -44,10 +49,12 @@ export async function POST(request: NextRequest) {
                 if(stock.stocks >= Number(reqBody.units))
                     stock.stocks -= Number(reqBody.units)
                 else
-                return NextResponse.json(
-                    { message: "Stock not Enough!", success: false },
-                    { status: 400 }
-                )
+                    return NextResponse.json(
+                        { message: "Stock not Enough!", success: false },
+                        { status: 400 }
+                    )
+            } else if(returning) {
+                stock.stocks += Number(reqBody.units)
             }
             await stock.save();
             
@@ -65,10 +72,10 @@ export async function POST(request: NextRequest) {
 
         const newRecording = new Recording({
             productCode: reqBody.code,
-            mode: mode,
+            mode: modeString,
             pricePerUnit: reqBody.pricePerUnit,
             units: reqBody.units,
-            market: market,
+            market: marketString,
             taxes: tax,
         })
 

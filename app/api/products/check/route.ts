@@ -6,11 +6,11 @@ connectDB()
 
 export async function GET(request: NextRequest) {
     // I need to analyse the request.
-    const productCode = request.nextUrl.searchParams.get('code')
-    console.log('Product Code: ', productCode)
+    const code = request.nextUrl.searchParams.get('code')
+    console.log('Product Code: ', code)
     try {
         // Find the product in MongoDB using the product code
-        const product = await Product.findOne({ productCode: productCode });
+        const product = await Product.findOne({ productCode: code });
 
         if (!product) {
             return NextResponse.json({

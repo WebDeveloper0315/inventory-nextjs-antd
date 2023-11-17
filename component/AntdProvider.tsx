@@ -1,13 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { ConfigProvider, message } from 'antd'
-import { usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux'
 import { SetCurrentUser } from '@/redux/usersSlice'
 import Loader from './Loader';
 import { SetLoading } from '@/redux/loadersSlice'
-import { useRouter } from 'next/navigation'
 
 function AntdProvider({ children }: { children: React.ReactNode }) {
     const { currentUser } = useSelector((state: any) => state.users)
@@ -16,6 +15,11 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter()
     const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true)
     const [menuItems, setMenuItems] = useState([
+        {
+            name: " ",
+            path: " ",
+            icon: " "
+        },
         {
             name: " ",
             path: " ",
@@ -49,6 +53,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
             let pos: number = 0
 
             const isNewProduct = response.data.data.newProduct === true
+            const isReturning = response.data.data.returning === true
             const isSold = response.data.data.sold === true
             const isQuery = response.data.data.query === true
             const isAddUser = response.data.data.addUser === true
@@ -72,6 +77,15 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 setMenuItems(tempMenuItems)
                 pos = pos + 1
             }
+
+            if (isReturning) {
+                const tempMenuItems = menuItems
+                tempMenuItems[pos].name = 'Item Return'
+                tempMenuItems[pos].path = '/returning'
+                tempMenuItems[pos].icon = "ri-refund-2-line"
+                setMenuItems(tempMenuItems)
+                pos = pos + 1
+            }
             // console.log(pos)
             if (isQuery) {
                 const tempMenuItems = menuItems
@@ -90,8 +104,8 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 pos = pos + 1
             }
 
-            if(pos < 4){
-                while(pos < 4){
+            if(pos < 5){
+                while(pos < 5){
                     const tempMenuItems = menuItems
                     tempMenuItems[pos].name = ''
                     tempMenuItems[pos].path = ''
