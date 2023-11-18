@@ -16,5 +16,8 @@ const config: Config = {
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: false,  //solve css confilcting(eg: button transparent background)
+  }
 }
 export default config
