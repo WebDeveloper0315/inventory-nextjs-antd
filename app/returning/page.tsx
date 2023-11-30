@@ -1,8 +1,8 @@
 'use client'
 import PageTitle from "@/component/PageTitle";
-import { Button, Form, Image, Input, Tooltip, message } from "antd";
+import { Button, Form, Image, Input, Popconfirm, Tooltip, message } from "antd";
 import React, { useState } from "react";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
@@ -12,6 +12,44 @@ function Returning() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
   const [addUnits, setAddUnits] = useState(false);
+  const [form] = Form.useForm();
+
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const showPopconfirm = () => {
+    setOpen(true);
+  };
+
+  const handleOk = async (formValues: any) => {
+    try {
+      setConfirmLoading(true);
+      console.log("returning.tsx onFinish", formValues);
+      const response = await axios.post(
+        "api/products/recording?returning=1",
+        formValues
+      );
+      console.log(response);
+      if (response.status === 201) {
+        message.success(response.data.message);
+      } else {
+        message.error(response.data.message || "Something Went Wrong!");
+      }
+      setImageUrl("");
+    } catch (error: any) {
+      // console.log(error)
+      message.error("Something went wrong");
+    } finally {
+      setOpen(false);
+      setConfirmLoading(false);
+    }
+    
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
 
   const onShowUnits = () => {
     setAddUnits(true);
@@ -25,7 +63,7 @@ function Returning() {
 
   const handleSubmit = async (code: string) => {
     try {
-      dispatch(SetLoading(true));
+      setConfirmLoading(true);
       const encodedCode = encodeURIComponent(code);
       const response = await axios.get(
         `api/products/check?code=${encodedCode}`
@@ -37,7 +75,8 @@ function Returning() {
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
     } finally {
-      dispatch(SetLoading(false));
+      setOpen(false)
+      setConfirmLoading(false);
     }
   };
 
@@ -75,7 +114,7 @@ function Returning() {
     <div>
       <PageTitle title="Return Item" />
       <div>
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form layout="vertical" onFinish={onFinish} form={form}>
           <div className="flex justify-center">
             <Form.Item
               label="Product Code"
@@ -151,14 +190,28 @@ function Returning() {
                           <Input placeholder="MarketPlace" />
                         </Form.Item>
 
-                        <Button
-                          type="primary"
-                          htmlType="submit"
+                        <Popconfirm
+                          title="Confirm Returning"
+                          description="Are you sure return this item?"
+                          open={open}
+                          onConfirm={() => handleOk(form.getFieldsValue())}
+                          
+                          okButtonProps={{ loading: confirmLoading }}
+                          onCancel={handleCancel}
+                          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                           className="my-3"
-                          block
                         >
-                          Confirm
-                        </Button>
+                          <Button
+                          type="primary"
+                          onClick={showPopconfirm}
+                          // htmlType="submit"
+                          // className="my-3"
+                          block
+                          >
+                            Confirm
+                          </Button>
+                        </Popconfirm>
+                        
                       </div>
                     )}
                   </div>

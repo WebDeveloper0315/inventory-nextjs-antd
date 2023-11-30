@@ -42,7 +42,7 @@ function Query() {
           </Button>
         </div>
 
-        <div className="mt-6 sm:w-1/2 md:w-1/3 lg:w-1/4">
+        <div className="mt-6 md:w-1/2 lg:w-1/3">
           {showOne && <OneGraph />}
           {showGeneral && <GeneralGraph />}
         </div>

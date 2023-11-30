@@ -30,14 +30,14 @@ function NewProduct() {
           <Col span={8}>
             
               <Button type='primary' block onClick={handleUnitsButtonClick}>
-                <i className="ri-add-line">&nbsp;Units</i>
+                <i className="ri-add-line">&nbsp;Buying</i>
               </Button>  
                
           </Col>
           <Col span={8}>
             
               <Button type='primary' block onClick={handleNewButtonClick}>
-                <i className="ri-file-list-3-line">&nbsp;New</i>
+                <i className="ri-file-list-3-line">&nbsp;Register</i>
               </Button>  
             
           </Col>
