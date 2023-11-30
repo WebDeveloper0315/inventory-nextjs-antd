@@ -33,7 +33,10 @@ export async function GET(request: NextRequest) {
       } else if (product.mode === "selling") {
         totalSellPrice += product.pricePerUnit * product.units;
         totalSellUnits += product.units;
-        totalTaxes += (product.pricePerUnit * product.taxes) / 100;
+        totalTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
+      } else if ( product.mode === "returning") {
+        totalSellUnits -= product.units;
+        totalSellPrice -= product.pricePerUnit * product.units;
       }
     });
 
@@ -48,8 +51,9 @@ export async function GET(request: NextRequest) {
         unitsSold: totalSellUnits,
         averageBuyPrice: avgBuyPrice,
         averageSellPrice: avgSellPrice,
-        profit: totalSellPrice - totalBuyPrice,
+        profit: totalSellUnits * (avgSellPrice - avgBuyPrice) - totalTaxes,
         averageMoneyInTax: totalTaxes / totalSellUnits,
+        
       },
       {
         status: 201,

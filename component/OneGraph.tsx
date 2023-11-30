@@ -67,7 +67,7 @@ function OneGraph() {
             value: response.data.averageMoneyInTax,
           },
         ]);
-        message.success(response.data.message);
+        // message.success(response.data.message);
       } else {
         message.error(response.data.message || "Something Went Wrong!");
       }

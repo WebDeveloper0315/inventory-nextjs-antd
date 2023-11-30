@@ -6,7 +6,7 @@ function BarGraph({ data }: any) {
     // Return null or handle the case when data is not available
     return null;
   }
-
+  console.log("object")
   const graphLabels = Object.keys(data);
   const values = Object.values(data);
 

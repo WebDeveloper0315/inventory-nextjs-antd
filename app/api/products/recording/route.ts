@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
             tax = reqBody.taxes
         } else if(returning) {
             modeString = 'returning'
+            marketString = reqBody.market
         }
         
         

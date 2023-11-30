@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       .populate("productCode")
       .populate("market");
 
-    // console.log('queryAll/route.ts  ',graphData)
+    console.log("queryAll/route.ts  ", graphData);
 
     const totBuyUnits: any = {};
     const totBuyPrice: any = {};
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const totTaxes: any = {};
     graphData.forEach((item) => {
       const { productCode, mode, pricePerUnit, units, market, taxes } = item;
-      console.log(market)
+      console.log(market);
       if (mode === "buying") {
         if (!totBuyPrice[productCode])
           totBuyPrice[productCode] = pricePerUnit * units;
@@ -40,15 +40,20 @@ export async function GET(request: NextRequest) {
         if (!totSellUnits[productCode]) totSellUnits[productCode] = units;
         else totSellUnits[productCode] += units;
 
-        if (!totTaxes[productCode])
+        if (!totTaxes[productCode]) {
           if (taxes !== undefined)
             totTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
-          else {
-            if (taxes !== undefined)
-              totTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
-          }
+        } else {
+          if (taxes !== undefined)
+            totTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
+        }
+      } else if (mode === "returning") {
+        totSellPrice[productCode] -= pricePerUnit * units;
+        totSellUnits[productCode] -= units;
       }
     });
+
+    console.log("totTaxes", totTaxes);
     const avgBuyPrice: any = {};
     let allBuyPrice: any = 0;
     let allBuyUnits: any = 0;
@@ -58,7 +63,8 @@ export async function GET(request: NextRequest) {
       allBuyPrice += totBuyPrice[productCode];
       allBuyUnits += totBuyUnits[productCode];
     }
-    // console.log(avgBuyPrice)
+    // console.log(avgBuyPrice);
+
     const avgSellPrice: any = {};
     let allSellPrice: any = 0;
     let allSellUnits: any = 0;
@@ -70,6 +76,8 @@ export async function GET(request: NextRequest) {
       allSellUnits += totSellUnits[productCode];
       allTaxes += totTaxes[productCode];
     }
+
+    // console.log(avgSellPrice);
 
     const profitCode: any = {};
     const profitMarket: any = {};
@@ -90,6 +98,13 @@ export async function GET(request: NextRequest) {
             else profitMarket[market] += profit;
           }
         }
+      } else if (mode === "returning") {
+        const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+        profitCode[productCode] -= profit;
+        if (market !== undefined) {
+          profitMarket[market] -= profit;
+        }
+        allProfit -= profit;
       }
     });
 
