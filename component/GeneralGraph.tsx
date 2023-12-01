@@ -13,8 +13,6 @@ function GeneralGraph() {
   const [tableData, setTableData] = useState<any[]>([]);
   Chart.register(CategoryScale);
 
-  
-
   React.useEffect(() => {
     const fetchGraphData = async () => {
       try {
