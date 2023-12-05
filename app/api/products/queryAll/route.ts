@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
     const totBuyPrice: any = {};
     const totSellUnits: any = {};
     const totSellPrice: any = {};
-    const totTaxes: any = {};
+    const totBuyTaxes: any = {};
+    const totSellTaxes: any = {};
     graphData.forEach((item) => {
       const { productCode, mode, pricePerUnit, units, market, taxes } = item;
       console.log(market);
@@ -32,6 +33,16 @@ export async function GET(request: NextRequest) {
 
         if (!totBuyUnits[productCode]) totBuyUnits[productCode] = units;
         else totBuyUnits[productCode] += units;
+
+        if (!totBuyTaxes[productCode]) {
+          if (taxes !== undefined){
+            totBuyTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
+          }
+        } else {
+          if (taxes !== undefined){
+            totBuyTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
+          }
+        }
       } else if (mode === "selling") {
         if (!totSellPrice[productCode])
           totSellPrice[productCode] = pricePerUnit * units;
@@ -40,12 +51,14 @@ export async function GET(request: NextRequest) {
         if (!totSellUnits[productCode]) totSellUnits[productCode] = units;
         else totSellUnits[productCode] += units;
 
-        if (!totTaxes[productCode]) {
-          if (taxes !== undefined)
-            totTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
+        if (!totSellTaxes[productCode]) {
+          if (taxes !== undefined){
+            totSellTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
+          }
         } else {
-          if (taxes !== undefined)
-            totTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
+          if (taxes !== undefined){
+            totSellTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
+          }
         }
       } else if (mode === "returning") {
         totSellPrice[productCode] -= pricePerUnit * units;
@@ -53,28 +66,35 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    console.log("totTaxes", totTaxes);
+    console.log("totSellTaxes", totSellTaxes);
     const avgBuyPrice: any = {};
+    const avgBuyTaxes: any = {};
     let allBuyPrice: any = 0;
     let allBuyUnits: any = 0;
+    let allBuyTaxes: any = 0;
     for (const productCode in totBuyPrice) {
       avgBuyPrice[productCode] =
         totBuyPrice[productCode] / totBuyUnits[productCode];
+      avgBuyTaxes[productCode] = totBuyTaxes[productCode] / totBuyUnits[productCode];
       allBuyPrice += totBuyPrice[productCode];
       allBuyUnits += totBuyUnits[productCode];
+      allBuyTaxes += totBuyTaxes[productCode];
     }
-    // console.log(avgBuyPrice);
+    
+    console.log(allBuyTaxes);
 
     const avgSellPrice: any = {};
     let allSellPrice: any = 0;
     let allSellUnits: any = 0;
-    let allTaxes: any = 0;
+    let allSellTaxes: any = 0;
+    
     for (const productCode in totSellPrice) {
       avgSellPrice[productCode] =
         totSellPrice[productCode] / totSellUnits[productCode];
       allSellPrice += totSellPrice[productCode];
       allSellUnits += totSellUnits[productCode];
-      allTaxes += totTaxes[productCode];
+      allSellTaxes += totSellTaxes[productCode];
+      
     }
 
     // console.log(avgSellPrice);
@@ -87,7 +107,7 @@ export async function GET(request: NextRequest) {
       if (mode === "selling") {
         if (taxes !== undefined) {
           const profit =
-            ((1 - taxes / 100) * pricePerUnit - avgBuyPrice[productCode]) *
+            ((1 - taxes / 100) * pricePerUnit - avgBuyPrice[productCode] + avgBuyTaxes[productCode]) *
             units;
           if (!profitCode[productCode]) profitCode[productCode] = profit;
           else profitCode[productCode] += profit;
@@ -114,7 +134,7 @@ export async function GET(request: NextRequest) {
         TotalAverageBuyPrice: allBuyPrice / allBuyUnits,
         TotalAverageSellPrice: allSellPrice / allSellUnits,
         TotalProfit: allProfit,
-        AverageMoneyInTaxes: allTaxes / allSellUnits,
+        AverageMoneyInTaxes: allSellTaxes / allSellUnits,
         profitCode,
         profitMarket,
       },

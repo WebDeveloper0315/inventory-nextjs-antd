@@ -61,7 +61,8 @@ function OneGraph() {
             label: "Average sell price",
             value: response.data.averageSellPrice,
           },
-          { label: "Profit", value: response.data.profit },
+          { label: "Product Profit", value: response.data.profitProduct },
+          { label: "Sale Profit", value: response.data.profitSale },
           {
             label: "Average Money in tax",
             value: response.data.averageMoneyInTax,

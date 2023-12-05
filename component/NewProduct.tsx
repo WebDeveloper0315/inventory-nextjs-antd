@@ -118,7 +118,7 @@ function NewProductRegister() {
         <div className="flex justify-center">
           <Form.Item
             label="Disposable Units"
-            name="unit"
+            name="units"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
             <Input placeholder="123" />
@@ -128,7 +128,7 @@ function NewProductRegister() {
         <div className="flex justify-center">
           <Form.Item
             label="Price Per Unit"
-            name="price"
+            name="pricePerUnit"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
             <Input placeholder="123" />
@@ -138,10 +138,20 @@ function NewProductRegister() {
         <div className="flex justify-center">
           <Form.Item
             label="Location"
-            name="location"
+            name="market"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
             <Input placeholder="NY" />
+          </Form.Item>
+        </div>
+
+        <div className="flex justify-center">
+          <Form.Item
+            label="Tax(%)"
+            name="taxes"
+            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+          >
+            <Input placeholder="Tax(%)" />
           </Form.Item>
         </div>
 

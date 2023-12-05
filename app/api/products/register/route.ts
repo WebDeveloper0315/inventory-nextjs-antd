@@ -2,6 +2,8 @@ import { connectDB } from "@/config/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 import { validateJWT } from "@/helpers/validateJWT";
+import Stock from "@/models/stockModel";
+import Recording from "@/models/recordingModel";
 
 connectDB();
 
@@ -19,13 +21,38 @@ export async function POST(request: NextRequest) {
     const newProduct = new Product({
       productCode: reqBody.code,
       productImage: reqBody.imagePath,
-      // newProduct: reqBody.userAuthority.includes('newProduct'),
-      disposableUnits: reqBody.unit,
-      pricePerUnit: reqBody.price,
-      location: reqBody.location,
+      disposableUnits: reqBody.units,
+      pricePerUnit: reqBody.pricePerUnit,
+      location: reqBody.market,
     });
 
     await newProduct.save();
+
+    const stock = await Stock.findOne({ productCode: reqBody.code });
+
+    if (stock) {
+      stock.stocks += Number(reqBody.units);
+      await stock.save();
+    } else {
+      const newStock = new Stock({
+        productCode: reqBody.code,
+        pricePerUnit: reqBody.pricePerUnit,
+        stocks: reqBody.units,
+      });
+
+      await newStock.save();
+    }
+
+    const newRecording = new Recording({
+      productCode: reqBody.code,
+      mode: "buying",
+      pricePerUnit: reqBody.pricePerUnit,
+      units: reqBody.units,
+      market: reqBody.market,
+      taxes: reqBody.taxes,
+    });
+
+    await newRecording.save();
 
     return NextResponse.json(
       { message: "Product Created Successfully", success: true },

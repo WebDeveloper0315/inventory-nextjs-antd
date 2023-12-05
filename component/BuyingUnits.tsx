@@ -142,6 +142,22 @@ function NewUnits() {
                         <Input placeholder="123" />
                       </Form.Item>
 
+                      <Form.Item
+                        label="Market"
+                        name="market"
+                        className="my-3"
+                      >
+                        <Input placeholder="Market Place" />
+                      </Form.Item>
+
+                      <Form.Item
+                        label="Tax (%)"
+                        name="taxes"
+                        className="my-3"
+                      >
+                        <Input placeholder="Tax (%)" />
+                      </Form.Item>
+
                       <Button
                         type="primary"
                         htmlType="submit"

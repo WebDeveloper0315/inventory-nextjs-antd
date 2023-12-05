@@ -24,16 +24,18 @@ export async function GET(request: NextRequest) {
     let totalSellPrice = 0;
     let totalBuyUnits = 0;
     let totalSellUnits = 0;
-    let totalTaxes = 0;
+    let totalSellTaxes = 0;
+    let totalBuyTaxes = 0;
 
     products.forEach((product: any) => {
       if (product.mode === "buying") {
         totalBuyPrice += product.pricePerUnit * product.units;
         totalBuyUnits += product.units;
+        totalBuyTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
       } else if (product.mode === "selling") {
         totalSellPrice += product.pricePerUnit * product.units;
         totalSellUnits += product.units;
-        totalTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
+        totalSellTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
       } else if ( product.mode === "returning") {
         totalSellUnits -= product.units;
         totalSellPrice -= product.pricePerUnit * product.units;
@@ -42,6 +44,7 @@ export async function GET(request: NextRequest) {
 
     const avgBuyPrice = totalBuyPrice / totalBuyUnits;
     const avgSellPrice = totalSellPrice / totalSellUnits;
+    const avgBuyTaxes = totalBuyTaxes / totalBuyUnits;
 
     console.log("Average Buy Price:", avgBuyPrice);
     console.log("Average Sell Price:", avgSellPrice);
@@ -51,8 +54,9 @@ export async function GET(request: NextRequest) {
         unitsSold: totalSellUnits,
         averageBuyPrice: avgBuyPrice,
         averageSellPrice: avgSellPrice,
-        profit: totalSellUnits * (avgSellPrice - avgBuyPrice) - totalTaxes,
-        averageMoneyInTax: totalTaxes / totalSellUnits,
+        profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes,
+        profitSale: totalSellUnits * (avgSellPrice - avgBuyPrice) - totalSellTaxes + totalSellUnits * avgBuyTaxes,
+        averageMoneyInTax: totalSellTaxes / totalSellUnits,
         
       },
       {
