@@ -93,3 +93,27 @@
     font-size: 18px;
   }
   
+
+  /* styles.css */
+.custom-sub-menu-items {
+  /* Add your custom styles for the sub-menu items */
+  /* For example: */
+  background-color: #f4f4f4;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.custom-sub-menu-item {
+  /* Add your custom styles for the individual sub-menu items */
+  /* For example: */
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-sub-menu-item:hover {
+  /* Add hover styles if needed */
+  background-color: #e4e4e4;
+}

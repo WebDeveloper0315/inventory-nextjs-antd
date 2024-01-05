@@ -1,6 +1,6 @@
 "use client";
 import PageTitle from "@/component/PageTitle";
-import { Button, Form, Image, Input, Tooltip, message } from "antd";
+import { Button, Form, Image, Input, Tooltip, message,  Select } from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
@@ -11,6 +11,8 @@ function Sold() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
   const [addUnits, setAddUnits] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const { Option } = Select;
 
   const onShowUnits = () => {
     setAddUnits(true);
@@ -19,7 +21,6 @@ function Sold() {
   const onHideUnits = () => {
     setAddUnits(false);
     setImageUrl("");
-    // onHide()
   };
 
   const handleSubmit = async (code: string) => {
@@ -29,9 +30,17 @@ function Sold() {
       const response = await axios.get(
         `api/products/check?code=${encodedCode}`
       );
-
-      const url = response.data?.data?.productImage;
+        console.log(response);
+      const url = response.data?.data?.product?.productImage;
       setImageUrl(url);
+
+      const locationArray = response.data?.data?.stockData;
+      const formattedLocations = locationArray.map((locationData: { location: any; stocks: any; }) => {
+        return `${locationData.location}(${locationData.stocks})`;
+      });
+      setLocations(formattedLocations);
+      console.log(formattedLocations);
+
       setAddUnits(false);
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
@@ -94,7 +103,6 @@ function Sold() {
           </div>
           <div className="flex justify-center ">
             <div className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-              {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
               {imageUrl && (
                 <div className="flex flex-col items-center">
                   <div className="flex w-auto flex-col items-center">
@@ -126,7 +134,22 @@ function Sold() {
                     {addUnits && (
                       <div>
                         <Form.Item
-                          label="Units Selling"
+                          label="Location"
+                          name="location"
+                          className="my-3 w-auto"
+                        >
+                          <Select
+                            placeholder="Select a location"
+                          >
+                            {locations.map((location, index) => (
+                              <Option key={index} value={location}>
+                                {location}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                        <Form.Item
+                          label="Selling Units"
                           name="units"
                           className=" my-3 w-auto"
                         >
@@ -144,7 +167,7 @@ function Sold() {
                           name="market"
                           className=" my-3 w-auto"
                         >
-                          <Input placeholder="Market Place" />
+                          <Input placeholder="Market where you are selling" />
                         </Form.Item>
                         <Form.Item
                           label="Taxes(%)"

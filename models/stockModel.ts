@@ -6,6 +6,10 @@ const stockSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    location: {
+      type: String,
+      required: true,
+    },
     pricePerUnit: {
       type: Number,
       required: true,

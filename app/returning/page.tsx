@@ -69,7 +69,7 @@ function Returning() {
         `api/products/check?code=${encodedCode}`
       );
 
-      const url = response.data?.data?.productImage;
+      const url = response.data?.data?.product?.productImage;
       setImageUrl(url);
       setAddUnits(false);
     } catch (error: any) {

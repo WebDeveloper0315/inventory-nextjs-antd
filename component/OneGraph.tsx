@@ -20,7 +20,7 @@ function OneGraph() {
         `api/products/check?code=${encodedCode}`
       );
 
-      const url = response.data?.data?.productImage;
+      const url = response.data?.data?.product?.productImage;
       setImageUrl(url);
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");

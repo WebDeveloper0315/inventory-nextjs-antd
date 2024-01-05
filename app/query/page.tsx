@@ -1,5 +1,6 @@
 "use client";
 import GeneralGraph from "@/component/GeneralGraph";
+import LocationGraph from "@/component/LocationGraph";
 import OneGraph from "@/component/OneGraph";
 import PageTitle from "@/component/PageTitle";
 import { Button } from "antd";
@@ -8,15 +9,24 @@ import React, { useState } from "react";
 function Query() {
   const [showGeneral, setShowGeneral] = useState(false);
   const [showOne, setShowOne] = useState(false);
+  const [showLocation, setLocation] = useState(false);
 
   const handleGeneralButtonClick = () => {
     setShowGeneral(true);
     setShowOne(false);
+    setLocation(false);
   };
 
   const handleOneButtonClick = () => {
     setShowGeneral(false);
     setShowOne(true);
+    setLocation(false);
+  };
+
+  const handleLocationButtonClick = () => {
+    setShowGeneral(false);
+    setShowOne(false);
+    setLocation(true);
   };
 
   return (
@@ -40,11 +50,20 @@ function Query() {
           >
             <i className="ri-line-chart-line">&nbsp;General</i>
           </Button>
+          <Button
+            type="primary"
+            block
+            onClick={handleLocationButtonClick}
+            className="mx-3"
+          >
+            <i className="ri-map-pin-line">&nbsp;Location</i>
+          </Button>
         </div>
 
         <div className="mt-6 md:w-1/2 lg:w-1/3">
           {showOne && <OneGraph />}
           {showGeneral && <GeneralGraph />}
+          {showLocation && <LocationGraph/>}
         </div>
       </div>
     </div>

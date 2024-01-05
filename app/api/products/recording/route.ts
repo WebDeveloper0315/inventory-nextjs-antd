@@ -2,6 +2,7 @@ import { connectDB } from "@/config/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Recording from "@/models/recordingModel";
 import Stock from "@/models/stockModel";
+import Location from "@/models/locationModel";
 import { validateJWT } from "@/helpers/validateJWT";
 connectDB();
 
@@ -22,6 +23,15 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     console.log("recording/route.ts", reqBody);
 
+    const locationString = reqBody.location; // Assuming this is the locations string from reqBody
+    let locationInfo: string = locationString;
+    if(selling){
+      const openingParenIndex = locationString.indexOf("(");
+      locationInfo = locationString.substring(0, openingParenIndex);
+    }
+    
+    console.log("locationInfo", locationInfo);
+
     let modeString = "";
     let tax = 0;
     if (buying) {
@@ -35,10 +45,17 @@ export async function POST(request: NextRequest) {
     }
 
     // const stock = await Stock.findOne({ productCode: reqBody.code,  pricePerUnit: reqBody.pricePerUnit})
-    const stock = await Stock.findOne({ productCode: reqBody.code });
+    const stock = await Stock.findOne({
+      productCode: reqBody.code,
+      location: locationInfo,
+    });
 
     if (stock) {
       if (buying) {
+        stock.pricePerUnit =
+          (stock.pricePerUnit * stock.stocks +
+            Number(reqBody.pricePerUnit) * Number(reqBody.units)) /
+          (stock.stocks + Number(reqBody.units));
         stock.stocks += Number(reqBody.units);
       } else if (selling) {
         if (stock.stocks >= Number(reqBody.units))
@@ -57,6 +74,7 @@ export async function POST(request: NextRequest) {
         productCode: reqBody.code,
         pricePerUnit: reqBody.pricePerUnit,
         stocks: reqBody.units,
+        location: locationInfo,
       });
 
       await newStock.save();
@@ -68,10 +86,21 @@ export async function POST(request: NextRequest) {
       pricePerUnit: reqBody.pricePerUnit,
       units: reqBody.units,
       market: reqBody.market,
+      location: locationInfo,
       taxes: tax,
     });
 
     await newRecording.save();
+
+    const locationQuery = await Location.findOne({location: locationInfo});
+    
+    if(!locationQuery){
+      const newLocation = new Location({
+        location: locationInfo,
+        description: "",
+      });
+      await newLocation.save();
+    }
 
     return NextResponse.json(
       { message: "Record Saved Successfully", success: true },

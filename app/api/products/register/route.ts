@@ -4,6 +4,7 @@ import Product from "@/models/productModel";
 import { validateJWT } from "@/helpers/validateJWT";
 import Stock from "@/models/stockModel";
 import Recording from "@/models/recordingModel";
+import Location from "@/models/locationModel";
 
 connectDB();
 
@@ -17,18 +18,19 @@ export async function POST(request: NextRequest) {
       throw new Error("Product already exists");
     }
 
-    // create user
+    // create product
     const newProduct = new Product({
       productCode: reqBody.code,
       productImage: reqBody.imagePath,
-      disposableUnits: reqBody.units,
+      disposableUnits: reqBody.units, 
       pricePerUnit: reqBody.pricePerUnit,
-      location: reqBody.market,
+      location: reqBody.location,
+      market: reqBody.market,
     });
 
     await newProduct.save();
 
-    const stock = await Stock.findOne({ productCode: reqBody.code });
+    const stock = await Stock.findOne({ productCode: reqBody.code, location: reqBody.location });
 
     if (stock) {
       stock.stocks += Number(reqBody.units);
@@ -38,6 +40,7 @@ export async function POST(request: NextRequest) {
         productCode: reqBody.code,
         pricePerUnit: reqBody.pricePerUnit,
         stocks: reqBody.units,
+        location: reqBody.location,
       });
 
       await newStock.save();
@@ -50,9 +53,20 @@ export async function POST(request: NextRequest) {
       units: reqBody.units,
       market: reqBody.market,
       taxes: reqBody.taxes,
+      location: reqBody.location,
     });
 
     await newRecording.save();
+
+    const locationQuery = await Location.findOne({location: reqBody.location});
+    
+    if(!locationQuery){
+      const newLocation = new Location({
+        location: reqBody.location,
+        description: "",
+      });
+      await newLocation.save();
+    }
 
     return NextResponse.json(
       { message: "Product Created Successfully", success: true },

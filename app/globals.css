@@ -76,6 +76,11 @@ button {
   border-radius: 2px !important;
 }
 
+.ant-table button {
+  height: 17px !important;
+  border-radius: 2px !important;
+}
+
 label {
   margin: 0px !important;
   padding: 0px !important;

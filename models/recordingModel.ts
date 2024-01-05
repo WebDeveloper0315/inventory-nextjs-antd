@@ -26,6 +26,10 @@ const recordingSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
+    location: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

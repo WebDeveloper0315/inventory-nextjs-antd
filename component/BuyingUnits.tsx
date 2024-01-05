@@ -20,7 +20,7 @@ function NewUnits() {
         `api/products/check?code=${encodedCode}`
       );
 
-      const url = response.data?.data?.productImage;
+      const url = response.data?.data?.product?.productImage;
       console.log("URL ", response);
 
       setImageUrl(url);
@@ -128,18 +128,18 @@ function NewUnits() {
                   {addUnits && (
                     <div>
                       <Form.Item
-                        label="Units Buy"
+                        label="Units to buy"
                         name="units"
                         className=" my-3 w-auto"
                       >
-                        <Input placeholder="123" />
+                        <Input placeholder="Input units to buy" />
                       </Form.Item>
                       <Form.Item
                         label="Price per Unit"
                         name="pricePerUnit"
                         className="my-3"
                       >
-                        <Input placeholder="123" />
+                        <Input placeholder="Input price per unit" />
                       </Form.Item>
 
                       <Form.Item
@@ -147,7 +147,7 @@ function NewUnits() {
                         name="market"
                         className="my-3"
                       >
-                        <Input placeholder="Market Place" />
+                        <Input placeholder="Market PlaceMarket where you bought" />
                       </Form.Item>
 
                       <Form.Item
@@ -156,6 +156,14 @@ function NewUnits() {
                         className="my-3"
                       >
                         <Input placeholder="Tax (%)" />
+                      </Form.Item>
+
+                      <Form.Item
+                        label="Location"
+                        name="location"
+                        className="my-3"
+                      >
+                        <Input placeholder="location where you want to store" />
                       </Form.Item>
 
                       <Button

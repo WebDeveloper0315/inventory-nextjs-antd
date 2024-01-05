@@ -32,11 +32,7 @@ function NewProductRegister() {
       if (isExist.status === 200 && productImage) {
         const formData = new FormData();
         formData.append("image", productImage);
-
-        // const resImage = await fetch('/api/products/saveImage', {
-        //     method: 'POST',
-        //     body: formData,
-        // })
+        
         const resImage = await axios.post("/api/products/saveImage", formData);
 
         if (resImage.status === 201) {
@@ -117,11 +113,11 @@ function NewProductRegister() {
         {/* Other form inputs */}
         <div className="flex justify-center">
           <Form.Item
-            label="Disposable Units"
+            label="Units to Buying"
             name="units"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
-            <Input placeholder="123" />
+            <Input placeholder="Input the units to buy" />
           </Form.Item>
         </div>
 
@@ -131,17 +127,17 @@ function NewProductRegister() {
             name="pricePerUnit"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
-            <Input placeholder="123" />
+            <Input placeholder="Input the price per unit" />
           </Form.Item>
         </div>
 
         <div className="flex justify-center">
           <Form.Item
-            label="Location"
+            label="Market Place"
             name="market"
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
-            <Input placeholder="NY" />
+            <Input placeholder="Market where you bought" />
           </Form.Item>
         </div>
 
@@ -152,6 +148,16 @@ function NewProductRegister() {
             className="sm:w-1/2 md:w-1/3 lg:w-1/4"
           >
             <Input placeholder="Tax(%)" />
+          </Form.Item>
+        </div>
+
+        <div className="flex justify-center">
+          <Form.Item
+            label="Location"
+            name="location"
+            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+          >
+            <Input placeholder="location where you want to store" />
           </Form.Item>
         </div>
 
