@@ -189,27 +189,19 @@ export async function GET(request: NextRequest) {
     let profitCodeValue: any = {};
     let profitMarketValue: any = {};
 
-    if(Vmonth){
+    if (Vmonth) {
       startOfLoop = 0;
       endOfLoop = parseInt(Vmonth);
-    }else if(Vyear){
+    } else if (Vyear) {
       startOfLoop = parseInt(Vyear) - 3;
       endOfLoop = parseInt(Vyear) + 1;
     }
 
-    for(let i = startOfLoop; i < endOfLoop; i++){
+    for (let i = startOfLoop; i < endOfLoop; i++) {
       if (Vmonth) {
         // Assuming Vmonth is in the format MM (e.g., 01 for January)
         const startOfMonth = new Date(currentYear, i, 1);
-        const endOfMonth = new Date(
-          currentYear,
-          i + 1,
-          0,
-          23,
-          59,
-          59,
-          999
-        );
+        const endOfMonth = new Date(currentYear, i + 1, 0, 23, 59, 59, 999);
         filtersObject.createdAt = {
           $gte: startOfMonth,
           $lt: endOfMonth,
@@ -223,16 +215,16 @@ export async function GET(request: NextRequest) {
           $lt: endOfYear,
         };
       }
-  
+
       const graphData = await Recording.find(filtersObject)
         .populate("productCode")
         .populate("market");
-  
+
       // console.log("queryAll/route.ts  ", graphData);
-  
+
       const metrics = calculateMetrics(graphData);
       console.log(metrics);
-  
+
       const sortedTotSellUnits = Object.fromEntries(
         Object.entries(metrics.totSellUnits).sort(
           ([, a], [, b]) => (b as any) - (a as any)
@@ -272,7 +264,13 @@ export async function GET(request: NextRequest) {
 
       const monthlyData = {
         key: i,
-        name: `${Vmonth ? new Date(currentYear, i, 1).toLocaleString('default', { month: 'long' }) : 'Year ' + i}`,
+        name: `${
+          Vmonth
+            ? new Date(currentYear, i, 1).toLocaleString("default", {
+                month: "long",
+              })
+            : "Year " + i
+        }`,
         value: "",
         children: [
           {
@@ -284,7 +282,8 @@ export async function GET(request: NextRequest) {
                 key: `${i}01${index + 1}`,
                 name: vKey,
                 value: priceValue,
-              })),
+              })
+            ),
           },
           {
             key: `${i}02`,
