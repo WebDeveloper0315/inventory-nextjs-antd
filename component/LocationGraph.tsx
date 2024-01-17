@@ -8,19 +8,19 @@ import {
   Space,
   Table,
 } from "antd";
-import React, { useState } from "react";
+import React, {  RefObject, useRef, useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
-// import jsPDF from "jspdf";
-// import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const { TextArea } = Input;
 
 function LocationGraph() {
-  // const tableRef: MutableRefObject<null | HTMLDivElement> = useRef(null);
+  const tableRef: RefObject<HTMLDivElement> = useRef(null);
   const dispatch = useDispatch();
   const [descriptionEnabled, setDescriptionEnabled] = useState(false);
   const [locationChangeEnabled, setLocationChangeEnabled] = useState(false);
@@ -122,35 +122,39 @@ function LocationGraph() {
     console.log(`checked = ${e.target.checked}`);
   };
 
-  // const downloadStockDataAsPDF = () => {
-  //   if (tableRef.current !== null) {
-  //     const input = tableRef.current;
-  //     // const input = document.getElementById("stockDataTable");
-  //     html2canvas(input).then((canvas) => {
-  //       const imageData = canvas.toDataURL("image/png");
+  const downloadStockDataAsPDF = async () => {
+    const input = tableRef.current;
 
-  //       const pdf = new jsPDF("p", "mm", "a4");
-  //       const imgWidth = 210;
-  //       const pageHeight = 295;
-  //       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  //       let heightLeft = imgHeight;
-
-  //       let position = 0;
-
-  //       pdf.addImage(imageData, "PNG", 0, position, imgWidth, imgHeight);
-  //       heightLeft -= pageHeight;
-
-  //       while (heightLeft >= 0) {
-  //         position = heightLeft - imgHeight;
-  //         pdf.addPage();
-  //         pdf.addImage(imageData, "PNG", 0, position, imgWidth, imgHeight);
-  //         heightLeft -= pageHeight;
-  //       }
-
-  //       pdf.save("stockData.pdf");
-  //     });
-  //   }
-  // };
+    if (input) {
+      console.log('asd', input)
+      try {
+        const canvas = await html2canvas((input as HTMLDivElement).nativeElement);
+        console.log('asd', canvas)
+        const imgData = canvas.toDataURL('image/png', 100);
+        // eslint-disable-next-line new-cap
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 90;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 0;
+  
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  
+        const pageCount = Math.ceil(canvas.height / 295); // Calculate number of pages based on height
+  
+        for (let i = 1; i < pageCount; i++) {
+          pdf.addPage('a4');
+          position = -(295 * i);
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        }
+  
+        pdf.save('stockData.pdf');
+      } catch (error) {
+        console.error('Error while generating PDF:', error);
+        // Handle the error, e.g., display an error message to the user
+      }
+    }
+  };
+  
 
   return (
     <div>
@@ -223,15 +227,15 @@ function LocationGraph() {
         {stockData && (
           <>
             <Table
-              // ref={tableRef}
+              ref={tableRef}
               id="stockDataTable"
               dataSource={stockData}
               columns={columns}
               pagination={false}
             />
-            {/* <Button onClick={downloadStockDataAsPDF}>
+            <Button onClick={downloadStockDataAsPDF}>
               Download Stock Data as PDF
-            </Button> */}
+            </Button>
           </>
         )}
 

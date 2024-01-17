@@ -1,6 +1,6 @@
 "use client";
 import PageTitle from "@/component/PageTitle";
-import { Button, Form, Image, Input, Tooltip, message,  Select } from "antd";
+import { Button, Form, Image, Input, Tooltip, message, Select } from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
@@ -30,14 +30,16 @@ function Sold() {
       const response = await axios.get(
         `api/products/check?code=${encodedCode}`
       );
-        console.log(response);
+      console.log(response);
       const url = response.data?.data?.product?.productImage;
       setImageUrl(url);
 
       const locationArray = response.data?.data?.stockData;
-      const formattedLocations = locationArray.map((locationData: { location: any; stocks: any; }) => {
-        return `${locationData.location}(${locationData.stocks})`;
-      });
+      const formattedLocations = locationArray.map(
+        (locationData: { location: any; stocks: any }) => {
+          return `${locationData.location}(${locationData.stocks})`;
+        }
+      );
       setLocations(formattedLocations);
       console.log(formattedLocations);
 
@@ -138,9 +140,7 @@ function Sold() {
                           name="location"
                           className="my-3 w-auto"
                         >
-                          <Select
-                            placeholder="Select a location"
-                          >
+                          <Select placeholder="Select a location">
                             {locations.map((location, index) => (
                               <Option key={index} value={location}>
                                 {location}

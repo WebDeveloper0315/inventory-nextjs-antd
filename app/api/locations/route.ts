@@ -45,3 +45,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest){
+  try {
+    const allLocations = await Location.find();
+    return NextResponse.json({ locations: allLocations, success: true }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+}

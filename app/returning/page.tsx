@@ -1,12 +1,20 @@
-'use client'
+"use client";
 import PageTitle from "@/component/PageTitle";
-import { Button, Form, Image, Input, Popconfirm, Tooltip, message } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Popconfirm,
+  Select,
+  Tooltip,
+  message,
+} from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
-
 
 function Returning() {
   const dispatch = useDispatch();
@@ -16,6 +24,8 @@ function Returning() {
 
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const { Option } = Select;
 
   const showPopconfirm = () => {
     setOpen(true);
@@ -43,16 +53,32 @@ function Returning() {
       setOpen(false);
       setConfirmLoading(false);
     }
-    
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
+    console.log("Clicked cancel button");
     setOpen(false);
   };
 
-  const onShowUnits = () => {
-    setAddUnits(true);
+  const onShowUnits = async () => {
+    try {
+      dispatch(SetLoading(true));
+      const response = await axios.get("api/locations");
+      console.log(response.data.locations);
+      const locationsArray = response.data?.locations;
+      // I met some errors
+      const formattedLocations = locationsArray.map(
+        (location: { location: any }) => {
+          return location.location;
+        }
+      );
+      setLocations(formattedLocations);
+      setAddUnits(true);
+    } catch (error: any) {
+      message.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      dispatch(SetLoading(false));
+    }
   };
 
   const onHideUnits = () => {
@@ -63,7 +89,7 @@ function Returning() {
 
   const handleSubmit = async (code: string) => {
     try {
-      setConfirmLoading(true);
+      dispatch(SetLoading(true));
       const encodedCode = encodeURIComponent(code);
       const response = await axios.get(
         `api/products/check?code=${encodedCode}`
@@ -75,8 +101,8 @@ function Returning() {
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
     } finally {
-      setOpen(false)
-      setConfirmLoading(false);
+      setOpen(false);
+      dispatch(SetLoading(false));
     }
   };
 
@@ -143,7 +169,6 @@ function Returning() {
                       src={imageUrl}
                       className="w-auto"
                       alt="Product Image"
-                      
                     />
                   </div>
                   <div className="flex flex-row items-center">
@@ -190,28 +215,42 @@ function Returning() {
                           <Input placeholder="MarketPlace" />
                         </Form.Item>
 
+                        <Form.Item
+                          label="Location"
+                          name="location"
+                          className=" my-3 w-auto"
+                        >
+                          <Select placeholder="Select a location">
+                            {locations.map((location: any, index: any) => (
+                              <Option key={index} value={location}>
+                                {location}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+
                         <Popconfirm
                           title="Confirm Returning"
                           description="Are you sure return this item?"
                           open={open}
                           onConfirm={() => handleOk(form.getFieldsValue())}
-                          
                           okButtonProps={{ loading: confirmLoading }}
                           onCancel={handleCancel}
-                          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                          icon={
+                            <QuestionCircleOutlined style={{ color: "red" }} />
+                          }
                           className="my-3"
                         >
                           <Button
-                          type="primary"
-                          onClick={showPopconfirm}
-                          // htmlType="submit"
-                          // className="my-3"
-                          block
+                            type="primary"
+                            onClick={showPopconfirm}
+                            // htmlType="submit"
+                            // className="my-3"
+                            block
                           >
                             Confirm
                           </Button>
                         </Popconfirm>
-                        
                       </div>
                     )}
                   </div>

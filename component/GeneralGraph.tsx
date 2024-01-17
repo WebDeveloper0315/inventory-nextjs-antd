@@ -1,12 +1,15 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 import { SetLoading } from "@/redux/loadersSlice";
 import { Table, message, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Chart, { CategoryScale } from "chart.js/auto";
 import BarGraph from "./BarGraph";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface DataType {
   key: React.ReactNode;
@@ -29,6 +32,7 @@ const columns: ColumnsType<DataType> = [
 ];
 
 function GeneralGraph() {
+  const tableRef: RefObject<HTMLDivElement> = useRef(null);
   const dispatch = useDispatch();
   const [graphData, setGraphData] = useState<any>([]);
   const [tableData, setTableData] = useState<DataType[]>([]);
@@ -44,17 +48,16 @@ function GeneralGraph() {
       const currentMonth = currentDate.getMonth() + 1;
       const currentYear = currentDate.getFullYear();
       let response: any;
-      if(queryValue === 'month'){
+      if (queryValue === "month") {
         response = await axios.get(
           `/api/products/queryAll?month=${currentMonth}`
         );
-      }else if(queryValue === 'year'){
+      } else if (queryValue === "year") {
         response = await axios.get(
           `/api/products/queryAll?year=${currentYear}`
         );
       }
 
-      
       if (response.status === 201) {
         console.log("fetchGraphData");
         console.log(response.data);
@@ -70,13 +73,48 @@ function GeneralGraph() {
     }
   };
 
+  const downloadStockDataAsPDF = async () => {
+    const input = tableRef.current;
+
+    if (input) {
+      console.log("asd", input);
+      try {
+        const canvas = await html2canvas(
+          (input as HTMLDivElement).nativeElement
+        );
+        console.log("asd", canvas);
+        const imgData = canvas.toDataURL("image/png", 100);
+        // eslint-disable-next-line new-cap
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 190;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+
+        const pageCount = Math.ceil(canvas.height / 295); // Calculate number of pages based on height
+
+        for (let i = 1; i < pageCount; i++) {
+          pdf.addPage("a4");
+          position = -(295 * i);
+          pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        }
+
+        pdf.save("stockData-General.pdf");
+      } catch (error) {
+        console.error("Error while generating PDF:", error);
+        // Handle the error, e.g., display an error message to the user
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex">
         <Button
           type="primary"
           block
-          onClick={() => handleQueryButtonClick('month')} 
+          onClick={() => handleQueryButtonClick("month")}
           className="mx-3"
         >
           <i className="ri-bar-chart-2-fill">&nbsp;Monthly</i>
@@ -85,7 +123,7 @@ function GeneralGraph() {
         <Button
           type="primary"
           block
-          onClick={() => handleQueryButtonClick('year')} 
+          onClick={() => handleQueryButtonClick("year")}
           className="mx-3"
         >
           <i className="ri-bar-chart-2-fill">&nbsp;Yearly</i>
@@ -96,10 +134,14 @@ function GeneralGraph() {
           <>
             <div className="my-3">
               <Table
+                ref={tableRef}
                 columns={columns}
                 dataSource={tableData}
                 pagination={false}
               />
+              <Button onClick={downloadStockDataAsPDF}>
+                Download Stock Data as PDF
+              </Button>
             </div>
 
             <div>

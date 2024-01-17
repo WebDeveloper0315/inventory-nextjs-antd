@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     console.log("selling parameter ", selling);
 
     const returning = searchParams.get("returning");
-    console.log("selling parameter ", returning);
+    console.log("returning parameter ", returning);
 
     const reqBody = await request.json();
     console.log("recording/route.ts", reqBody);

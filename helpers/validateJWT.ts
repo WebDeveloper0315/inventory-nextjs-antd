@@ -17,7 +17,5 @@ export const validateJWT = async (request: NextRequest) => {
         return decodedData.userId
     } catch (error: any) {
         cookies().delete('token')
-        // request.cookies.delete('token') // I need to update
-        // throw new Error('error.message')
     }
 }
