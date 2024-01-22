@@ -8,7 +8,7 @@ import {
   Space,
   Table,
 } from "antd";
-import React, {  RefObject, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useDispatch } from "react-redux";
@@ -20,7 +20,7 @@ import html2canvas from "html2canvas";
 const { TextArea } = Input;
 
 function LocationGraph() {
-  const tableRef: RefObject<HTMLDivElement> = useRef(null);
+  const tableRef = useRef<any>();
   const dispatch = useDispatch();
   const [descriptionEnabled, setDescriptionEnabled] = useState(false);
   const [locationChangeEnabled, setLocationChangeEnabled] = useState(false);
@@ -123,7 +123,7 @@ function LocationGraph() {
   };
 
   const downloadStockDataAsPDF = async () => {
-    const input = tableRef.current as HTMLDivElement;
+    const input = tableRef.current!;
 
     if (input) {
       console.log('asd', input)

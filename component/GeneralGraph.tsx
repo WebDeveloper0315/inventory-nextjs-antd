@@ -79,7 +79,7 @@ function GeneralGraph() {
   const downloadStockDataAsPDF = async () => {
     await setPdfTableVisible(true);
 
-    const input = tableRef.current as HTMLDivElement;
+    const input = tableRef.current!;
 
     if (input) {
       
