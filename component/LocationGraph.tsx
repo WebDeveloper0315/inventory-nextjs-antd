@@ -123,12 +123,12 @@ function LocationGraph() {
   };
 
   const downloadStockDataAsPDF = async () => {
-    const input = tableRef.current;
+    const input = tableRef.current as HTMLDivElement;
 
     if (input) {
       console.log('asd', input)
       try {
-        const canvas = await html2canvas((input as HTMLDivElement).nativeElement);
+        const canvas = await html2canvas(input.nativeElement);
         console.log('asd', canvas)
         const imgData = canvas.toDataURL('image/png', 100);
         // eslint-disable-next-line new-cap

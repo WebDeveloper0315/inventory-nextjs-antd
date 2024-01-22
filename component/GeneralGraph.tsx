@@ -4,7 +4,7 @@ import { SetLoading } from "@/redux/loadersSlice";
 import { Table, message, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
-import React, { RefObject, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Chart, { CategoryScale } from "chart.js/auto";
 import BarGraph from "./BarGraph";
@@ -32,11 +32,13 @@ const columns: ColumnsType<DataType> = [
 ];
 
 function GeneralGraph() {
-  const tableRef: RefObject<HTMLDivElement> = useRef(null);
+  const tableRef = useRef<any>();
   const dispatch = useDispatch();
   const [graphData, setGraphData] = useState<any>([]);
   const [tableData, setTableData] = useState<DataType[]>([]);
+  const [tableDataForPdf, setTableDataForPdf] = useState<DataType[]>([]);
   const [isVisible, setVisible] = useState(false);
+  const [isPdfTableVisible, setPdfTableVisible] = useState(false);
 
   Chart.register(CategoryScale);
 
@@ -64,6 +66,7 @@ function GeneralGraph() {
 
         setGraphData(response.data);
         setTableData(response.data.tableData);
+        setTableDataForPdf(response.data.tableDataForPdf);
       }
     } catch (error: any) {
       message.error(error.message);
@@ -74,14 +77,16 @@ function GeneralGraph() {
   };
 
   const downloadStockDataAsPDF = async () => {
-    const input = tableRef.current;
+    await setPdfTableVisible(true);
+
+    const input = tableRef.current as HTMLDivElement;
 
     if (input) {
+      
       console.log("asd", input);
       try {
-        const canvas = await html2canvas(
-          (input as HTMLDivElement).nativeElement
-        );
+        
+        const canvas = await html2canvas(input.nativeElement);
         console.log("asd", canvas);
         const imgData = canvas.toDataURL("image/png", 100);
         // eslint-disable-next-line new-cap
@@ -103,7 +108,8 @@ function GeneralGraph() {
         pdf.save("stockData-General.pdf");
       } catch (error) {
         console.error("Error while generating PDF:", error);
-        // Handle the error, e.g., display an error message to the user
+      } finally{
+        setPdfTableVisible(false);
       }
     }
   };
@@ -134,11 +140,12 @@ function GeneralGraph() {
           <>
             <div className="my-3">
               <Table
-                ref={tableRef}
                 columns={columns}
                 dataSource={tableData}
                 pagination={false}
+                
               />
+              
               <Button onClick={downloadStockDataAsPDF}>
                 Download Stock Data as PDF
               </Button>
@@ -153,6 +160,18 @@ function GeneralGraph() {
               <h2>Bar Graph - Profit Per Market of this month</h2>
               <BarGraph data={graphData?.profitMarket} />
             </div>
+
+            {isPdfTableVisible && ( 
+                <div > 
+                  <Table
+                    ref={tableRef}
+                    columns={columns}
+                    dataSource={tableDataForPdf}
+                    pagination={false}
+                    expandable={{ defaultExpandAllRows: true }}
+                  />
+                </div>
+              )}
           </>
         )}
       </div>

@@ -183,6 +183,7 @@ export async function GET(request: NextRequest) {
     console.log("Month Value: ", Vyear);
 
     const yearlyData: any = [];
+    const yearlyDataForPdf = [];
     const filtersObject: any = {};
     let startOfLoop: number = 0;
     let endOfLoop: number = 0;
@@ -363,12 +364,98 @@ export async function GET(request: NextRequest) {
       yearlyData.push(monthlyData);
       profitCodeValue = metrics.profitCode;
       profitMarketValue = metrics.profitMarket;
+
+
+      const monthlyDataForPDF = {
+        name: `${
+          Vmonth
+            ? new Date(currentYear, i, 1).toLocaleString("default", {
+                month: "long",
+              })
+            : "Year " + i
+        }`,
+        value: "",
+        children: [
+          {
+            name: "Total Profit",
+            value: metrics.allProfit,
+            children: Object.entries(sortedProfitCode).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Total Units Sold",
+            value: metrics.allSellUnits,
+            children: Object.entries(sortedTotSellUnits).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Total Sell Price",
+            value: metrics.allSellPrice,
+            children: Object.entries(sortedTotSellPrice).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Total Buy Price",
+            value: metrics.allBuyPrice,
+            children: Object.entries(sortedTotBuyPrice).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Taxes with Buying",
+            value: metrics.allBuyTaxes,
+            children: Object.entries(sortedBuyTaxesValue).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Taxes with Selling",
+            value: metrics.allSellTaxes,
+            children: Object.entries(sortedSellTaxesValue).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Items Returned",
+            value: metrics.allReturnedUnits,
+            children: Object.entries(sortedReturnedUnitsValue).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+        ],
+      };
+      yearlyDataForPdf.push(monthlyDataForPDF)
     }
     console.log(yearlyData);
 
     return NextResponse.json(
       {
         tableData: yearlyData,
+        tableDataForPdf: yearlyDataForPdf,
         profitCode: profitCodeValue,
         profitMarket: profitMarketValue,
       },

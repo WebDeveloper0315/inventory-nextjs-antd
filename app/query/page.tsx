@@ -60,7 +60,7 @@ function Query() {
           </Button>
         </div>
 
-        <div className="mt-6 md:w-1/2 lg:w-1/3">
+        <div className="mt-6 ">
           {showOne && <OneGraph />}
           {showGeneral && <GeneralGraph />}
           {showLocation && <LocationGraph/>}
