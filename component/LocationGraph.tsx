@@ -16,8 +16,14 @@ import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import type { TableRowSelection } from "antd/lib/table/interface";
 
 const { TextArea } = Input;
+interface StockDataItem {
+  productCode: string;
+  pricePerUnit: number;
+  stocks: number;
+}
 
 function LocationGraph() {
   const tableRef = useRef<any>();
@@ -29,7 +35,14 @@ function LocationGraph() {
   const [locationInfo, setLocationInfo] = useState("");
   const [newLocation, setNewLocation] = useState("");
   const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
-  const [stockData, setStockData] = useState();
+  const [stockData, setStockData] = useState<StockDataItem[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [form] = Form.useForm();
+  const [initialValues, setInitialValues] = useState({});
+  const [descriptionCheckboxChecked, setDescriptionCheckboxChecked] =
+    useState(false);
+  const [locationChangeCheckboxChecked, setLocationChangeCheckboxChecked] =
+    useState(false);
 
   const handleSubmit = async (code: string) => {
     try {
@@ -73,14 +86,37 @@ function LocationGraph() {
 
   const onSubmitChangeLocation = async () => {
     try {
+      const selectedLocationNames = stockData
+        .filter((_, index) => selectedRowKeys.includes(index + 1))
+        .map((item) => item.productCode);
+
       const response = await axios.post(`api/locations`, {
         updating: newLocation,
         locationMessage: locationInfo,
+        selectedLocations: selectedLocationNames,
         status: "change",
       });
       if (response.status === 201) {
         message.success("Location Information changed successfully");
+
+        const formFields = form.getFieldsValue(); // Get all form fields
+        // Manually set the location change input value to an empty string
+        if ("locationChangeInput" in formFields) {
+          form.setFieldsValue({ locationChangeInput: "" });
+        }
         setSubmitButtonEnabled(false);
+        form.resetFields();
+        setStockData([]);
+        setNewLocation(""); // Reset new location input
+        setSelectedRowKeys([]); // Reset selected rows
+        setDescriptionEnabled(false); // Reset description inputs
+        setLocationChangeEnabled(false); // Reset location change inputs
+        setDescriptionCheckboxChecked(false); // Uncheck description checkbox
+        setLocationChangeCheckboxChecked(false); // Uncheck location change checkbox
+        setSaveButtonEnabled(false); // Reset save button
+        setInitialValues({});
+
+        
       }
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
@@ -114,51 +150,74 @@ function LocationGraph() {
 
   const onDescriptionChange = (e: CheckboxChangeEvent) => {
     setDescriptionEnabled(e.target.checked);
+    setDescriptionCheckboxChecked(e.target.checked);
     console.log(`checked = ${e.target.checked}`);
   };
 
   const onLocationChange = (e: CheckboxChangeEvent) => {
     setLocationChangeEnabled(e.target.checked);
-    console.log(`checked = ${e.target.checked}`);
+    setLocationChangeCheckboxChecked(e.target.checked);
+    setSelectedRowKeys(
+      e.target.checked ? stockData?.map((_, key) => key + 1) || [] : []
+    );
+    console.log("stockData", stockData?.map((_, key) => key + 1));
   };
 
   const downloadStockDataAsPDF = async () => {
     const input = tableRef.current!;
 
     if (input) {
-      console.log('asd', input)
+      console.log("asd", input);
       try {
         const canvas = await html2canvas(input.nativeElement);
-        console.log('asd', canvas)
-        const imgData = canvas.toDataURL('image/png', 100);
+        console.log("asd", canvas);
+        const imgData = canvas.toDataURL("image/png", 100);
         // eslint-disable-next-line new-cap
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF("p", "mm", "a4");
         const imgWidth = 90;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         let position = 0;
-  
-        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-  
-        const pageCount = Math.ceil(canvas.height / 295); // Calculate number of pages based on height
-  
+
+        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+
+        const pageCount = Math.ceil(canvas.height / 295);
+
         for (let i = 1; i < pageCount; i++) {
-          pdf.addPage('a4');
+          pdf.addPage("a4");
           position = -(295 * i);
-          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
         }
-  
-        pdf.save('stockData.pdf');
+
+        pdf.save("stockData.pdf");
       } catch (error) {
-        console.error('Error while generating PDF:', error);
-        // Handle the error, e.g., display an error message to the user
+        console.error("Error while generating PDF:", error);
       }
     }
   };
-  
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection: TableRowSelection<StockDataItem> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    type: locationChangeEnabled ? "checkbox" : undefined,
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log("selected Rows in SelectAll function", selectedRows);
+      if (!locationChangeEnabled) return;
+      if (selected) {
+        setSelectedRowKeys(stockData?.map((_, key) => key + 1) || []);
+      } else {
+        setSelectedRowKeys([]);
+      }
+    },
+  };
 
   return (
     <div>
-      <Form layout="vertical">
+      <Form form={form} layout="vertical" initialValues={initialValues}>
         <div className="my-3 flex w-full flex-col">
           <Form.Item label="Location" name="code" className="w-auto">
             <Input
@@ -174,7 +233,10 @@ function LocationGraph() {
         </div>
         <div className="my-3">
           <div className="my-3 flex flex-col">
-            <Checkbox onChange={onDescriptionChange}>
+            <Checkbox
+              onChange={onDescriptionChange}
+              checked={descriptionCheckboxChecked}
+            >
               Input Description
             </Checkbox>
 
@@ -203,9 +265,15 @@ function LocationGraph() {
               </Button>
             </div>
           </div>
-          <Checkbox onChange={onLocationChange}>Change Location</Checkbox>
+          <Checkbox
+            onChange={onLocationChange}
+            checked={locationChangeCheckboxChecked}
+          >
+            Change Location
+          </Checkbox>
           <Space.Compact style={{ width: "100%" }}>
             <Input
+              name="locationChangeInput"
               placeholder="Input location to change"
               disabled={!locationChangeEnabled}
               onChange={(e) => {
@@ -224,11 +292,13 @@ function LocationGraph() {
             </Button>
           </Space.Compact>
         </div>
+
         {stockData && (
           <>
             <Table
               ref={tableRef}
               id="stockDataTable"
+              rowSelection={rowSelection}
               dataSource={stockData}
               columns={columns}
               pagination={false}
@@ -238,8 +308,6 @@ function LocationGraph() {
             </Button>
           </>
         )}
-
-        {/* I need to show the data as table */}
       </Form>
     </div>
   );

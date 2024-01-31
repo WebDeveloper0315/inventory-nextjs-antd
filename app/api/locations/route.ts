@@ -7,7 +7,8 @@ connectDB();
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { updating, locationMessage, status } = body;
+  const { updating, locationMessage, selectedLocations, status } = body;
+  console.log('selected locations', selectedLocations)
 
   try {
     const locationQuery = await Location.findOne({ location: locationMessage });
@@ -20,10 +21,18 @@ export async function POST(request: NextRequest) {
           { status: 201 }
         );
       } else if (status === "change") {
-        locationQuery.location = updating;
-        locationQuery.save();
+        const locationQueryNew = await Location.findOne({ location: updating });
+        if(!locationQueryNew){
+          const newLocation = new Location({
+            location: updating,
+            description: "",
+          });
+          await newLocation.save();
+        }
+        // locationQuery.location = updating;
+        // locationQuery.save();
 
-        const stocksToUpdate = await Stock.find({ location: locationMessage });
+        const stocksToUpdate = await Stock.find({ location: locationMessage, productCode: { $in: selectedLocations } });
 
         for (const stock of stocksToUpdate) {
           stock.location = updating;

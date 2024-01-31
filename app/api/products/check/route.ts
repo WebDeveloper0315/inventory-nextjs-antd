@@ -54,10 +54,11 @@ export async function GET(request: NextRequest) {
       );
     } else if(locationQuery){
       const allData = await Stock.find({ location: locationQuery });
-      console.log(allData);
+      console.log('location query', allData);
 
-      const stockData = allData.map((oneData) => {
+      const stockData = allData.map((oneData, index) => {
         return {
+          key: index + 1,
           productCode: oneData.productCode,
           pricePerUnit: oneData.pricePerUnit,
           stocks: oneData.stocks,
@@ -66,7 +67,7 @@ export async function GET(request: NextRequest) {
 
       const locationData = await Location.findOne({location: locationQuery});
       console.log("locationData", locationData)
-      if(locationData){
+      if(locationData && allData.length > 0){
         return NextResponse.json(
           {
             message: "Location data fetched successfully",
