@@ -162,9 +162,11 @@ function GeneralGraph() {
             </div>
 
             {isPdfTableVisible && ( 
-                <div > 
+                <div ref={tableRef}> 
+                  <h1>Stock Data</h1>
+                  <hr/>
                   <Table
-                    ref={tableRef}
+                    
                     columns={columns}
                     dataSource={tableDataForPdf}
                     pagination={false}

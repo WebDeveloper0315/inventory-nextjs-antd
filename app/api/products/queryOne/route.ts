@@ -7,7 +7,7 @@ connectDB();
 
 export async function GET(request: NextRequest) {
   try {
-    validateJWT(request);
+    await validateJWT(request);
     const { searchParams } = new URL(request.url);
     const productCode = searchParams.get("popCode");
 

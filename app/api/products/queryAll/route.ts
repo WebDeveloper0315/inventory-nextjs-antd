@@ -172,7 +172,7 @@ function calculateMetrics(graphData: any) {
 
 export async function GET(request: NextRequest) {
   try {
-    validateJWT(request);
+    await validateJWT(request);
 
     const currentYear = new Date().getFullYear();
 

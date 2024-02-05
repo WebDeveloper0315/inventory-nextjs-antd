@@ -169,7 +169,7 @@ function LocationGraph() {
     if (input) {
       console.log("asd", input);
       try {
-        const canvas = await html2canvas(input.nativeElement);
+        const canvas = await html2canvas(input);
         console.log("asd", canvas);
         const imgData = canvas.toDataURL("image/png", 100);
         // eslint-disable-next-line new-cap
@@ -295,17 +295,24 @@ function LocationGraph() {
 
         {stockData && (
           <>
+          <div ref={tableRef}>
+            <h1>
+              Stock Data of {locationInfo}
+            </h1>
+            <hr/>
             <Table
-              ref={tableRef}
+              
               id="stockDataTable"
               rowSelection={rowSelection}
               dataSource={stockData}
               columns={columns}
               pagination={false}
             />
+            </div>
             <Button onClick={downloadStockDataAsPDF}>
               Download Stock Data as PDF
             </Button>
+            
           </>
         )}
       </Form>
