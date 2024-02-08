@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import AntdProvider from '@/component/AntdProvider'
 import ReduxProvider from '@/component/reduxProvider'
@@ -8,8 +7,6 @@ import './../styles/commonClasses.css'
 import './../styles/layout.css'
 import './../styles/loader.css'
 import React from 'react'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Inventory Management',
@@ -26,7 +23,7 @@ export default function RootLayout({
       <head>
         <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"/>
       </head>
-      <body className={inter.className}>
+      <body>
         <ReduxProvider>
           <AntdProvider>
             {children}

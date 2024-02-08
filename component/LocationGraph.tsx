@@ -29,6 +29,7 @@ function LocationGraph() {
   const tableRef = useRef<any>();
   const dispatch = useDispatch();
   const [descriptionEnabled, setDescriptionEnabled] = useState(false);
+  const [locationEnabled, setLocationEnabled] = useState(false);
   const [locationChangeEnabled, setLocationChangeEnabled] = useState(false);
   const [description, setDescription] = useState("");
   const [saveButtonEnabled, setSaveButtonEnabled] = useState(false);
@@ -39,6 +40,8 @@ function LocationGraph() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm();
   const [initialValues, setInitialValues] = useState({});
+  const [allLocationCheckboxChecked, setAllLocationCheckboxChecked] =
+    useState(false);
   const [descriptionCheckboxChecked, setDescriptionCheckboxChecked] =
     useState(false);
   const [locationChangeCheckboxChecked, setLocationChangeCheckboxChecked] =
@@ -146,6 +149,11 @@ function LocationGraph() {
       dataIndex: "stocks",
       key: "value",
     },
+    {
+      title: "Location",
+      dataIndex: "location",
+      key: "value",
+    },
   ];
 
   const onDescriptionChange = (e: CheckboxChangeEvent) => {
@@ -153,6 +161,21 @@ function LocationGraph() {
     setDescriptionCheckboxChecked(e.target.checked);
     console.log(`checked = ${e.target.checked}`);
   };
+
+  const onAllLocationChange = (e: CheckboxChangeEvent) => {
+    setLocationEnabled(e.target.checked);
+    setAllLocationCheckboxChecked(e.target.checked);
+    if (!e.target.checked) {
+      form.validateFields().then(() => {
+        setLocationInfo(form.getFieldValue("code"));
+        handleSubmit(form.getFieldValue("code"))
+      });
+    } else {
+      setLocationInfo("All Location");
+      handleSubmit("All Location")
+    }
+    
+  }
 
   const onLocationChange = (e: CheckboxChangeEvent) => {
     setLocationChangeEnabled(e.target.checked);
@@ -228,14 +251,25 @@ function LocationGraph() {
                   <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
                 </Tooltip>
               }
+              disabled={locationEnabled}
             />
           </Form.Item>
+          <Checkbox
+              onChange={onAllLocationChange}
+              checked={allLocationCheckboxChecked}
+              
+            >
+              Get all location&apos;s Info
+            </Checkbox>
+            <hr/>
         </div>
+
         <div className="my-3">
           <div className="my-3 flex flex-col">
             <Checkbox
               onChange={onDescriptionChange}
               checked={descriptionCheckboxChecked}
+              disabled={locationEnabled}
             >
               Input Description
             </Checkbox>
@@ -268,6 +302,7 @@ function LocationGraph() {
           <Checkbox
             onChange={onLocationChange}
             checked={locationChangeCheckboxChecked}
+            disabled={locationEnabled}
           >
             Change Location
           </Checkbox>

@@ -1,13 +1,19 @@
+const config = require("./config.ts");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    webpack: (config) => {
-        config.experiments = config.experiments || {}
-        config.experiments.topLevelAwait = true
-        return config
-    },
-    experimental: {
-        serverComponentExternalPackages: ["mongoose"],
-    },
-}
+  env: {
+    DB_URI: config.DB_URI,
+    JWT_SECRET: config.JWT_SECRET,
+  },
+  // webpack: (config) => {
+  //     config.experiments = config.experiments || {}
+  //     config.experiments.topLevelAwait = true
+  //     return config
+  // },
+  // experimental: {
+  //     serverComponentExternalPackages: ["mongoose"],
+  // },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

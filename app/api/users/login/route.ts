@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
       email: user.name,
     };
 
-    const token = jwt.sign(dataToBeSigned, process.env.jwt_secret!, {
-      expiresIn: "1h",
+    const token = jwt.sign(dataToBeSigned, process.env.JWT_SECRET!, {
+      expiresIn: "10m",
     });
 
     const response = NextResponse.json(
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     // set cookie
     response.cookies.set("token", token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 1000, // 1 hour
+      maxAge: 10 * 60 * 1000, // 10 mins
     });
 
     return response;

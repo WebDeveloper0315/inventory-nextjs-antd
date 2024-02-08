@@ -53,19 +53,30 @@ export async function GET(request: NextRequest) {
         }
       );
     } else if(locationQuery){
-      const allData = await Stock.find({ location: locationQuery });
+      let allData: any = [];
+      if(locationQuery === "All Location"){
+        allData = await Stock.find({stocks: { $gt: 0 }}).sort({ location: 1 });
+      }else{
+        allData = await Stock.find({ stocks: { $gt: 0 }, location: locationQuery });
+      }
+      
       console.log('location query', allData);
 
-      const stockData = allData.map((oneData, index) => {
+      const stockData = allData.map((oneData: any, index: any) => {
         return {
           key: index + 1,
           productCode: oneData.productCode,
           pricePerUnit: oneData.pricePerUnit,
           stocks: oneData.stocks,
+          location: oneData.location,
         };
       });
 
-      const locationData = await Location.findOne({location: locationQuery});
+      let locationData: any = await Location.findOne({location: locationQuery});
+      if(locationQuery === "All Location")
+      {
+        locationData = "true"
+      }
       console.log("locationData", locationData)
       if(locationData && allData.length > 0){
         return NextResponse.json(
