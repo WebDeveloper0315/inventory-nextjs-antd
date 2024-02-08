@@ -36,7 +36,7 @@ function NewProductRegister() {
         const resImage = await axios.post("/api/products/saveImage", formData);
 
         if (resImage.status === 201) {
-          console.log("adadsf", resImage);
+          // console.log("adadsf", resImage);
           // const responseData = await resImage.data.json()
           const finalFilePath = resImage.data.httpfilepath;
 
@@ -48,7 +48,7 @@ function NewProductRegister() {
           // Handle the case when the response is not ok
           console.error("Error while uploading the image");
         }
-        console.log("resImage", resImage);
+        // console.log("resImage", resImage);
       } else if (isExist.status === 201) {
         message.info("Selected Product exists. Try again!");
       }

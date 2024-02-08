@@ -34,12 +34,12 @@ function Returning() {
   const handleOk = async (formValues: any) => {
     try {
       setConfirmLoading(true);
-      console.log("returning.tsx onFinish", formValues);
+      // console.log("returning.tsx onFinish", formValues);
       const response = await axios.post(
         "api/products/recording?returning=1",
         formValues
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 201) {
         message.success(response.data.message);
       } else {
@@ -56,7 +56,7 @@ function Returning() {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    // console.log("Clicked cancel button");
     setOpen(false);
   };
 
@@ -64,7 +64,7 @@ function Returning() {
     try {
       dispatch(SetLoading(true));
       const response = await axios.get("api/locations");
-      console.log(response.data.locations);
+      // console.log(response.data.locations);
       const locationsArray = response.data?.locations;
       // I met some errors
       const formattedLocations = locationsArray.map(
@@ -116,12 +116,12 @@ function Returning() {
   const onFinish = async (values: any) => {
     try {
       dispatch(SetLoading(true));
-      console.log("returning.tsx onFinish", values);
+      // console.log("returning.tsx onFinish", values);
       const response = await axios.post(
         "api/products/recording?returning=1",
         values
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 201) {
         message.success(response.data.message);
       } else {

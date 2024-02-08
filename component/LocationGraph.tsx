@@ -53,13 +53,13 @@ function LocationGraph() {
 
       const response = await axios.get(`api/products/check?location=${code}`);
 
-      console.log("LocationGraph.tsx", response);
+      // console.log("LocationGraph.tsx", response);
       const descriptionData = response.data?.data?.locationData?.description;
       setDescription(descriptionData);
       setLocationInfo(code);
 
       const stockData = response.data?.data?.stockData;
-      console.log(stockData);
+      // console.log(stockData);
 
       setStockData(stockData);
     } catch (error: any) {
@@ -159,7 +159,7 @@ function LocationGraph() {
   const onDescriptionChange = (e: CheckboxChangeEvent) => {
     setDescriptionEnabled(e.target.checked);
     setDescriptionCheckboxChecked(e.target.checked);
-    console.log(`checked = ${e.target.checked}`);
+    // console.log(`checked = ${e.target.checked}`);
   };
 
   const onAllLocationChange = (e: CheckboxChangeEvent) => {
@@ -183,17 +183,17 @@ function LocationGraph() {
     setSelectedRowKeys(
       e.target.checked ? stockData?.map((_, key) => key + 1) || [] : []
     );
-    console.log("stockData", stockData?.map((_, key) => key + 1));
+    // console.log("stockData", stockData?.map((_, key) => key + 1));
   };
 
   const downloadStockDataAsPDF = async () => {
     const input = tableRef.current!;
 
     if (input) {
-      console.log("asd", input);
+      // console.log("asd", input);
       try {
         const canvas = await html2canvas(input);
-        console.log("asd", canvas);
+        // console.log("asd", canvas);
         const imgData = canvas.toDataURL("image/png", 100);
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF("p", "mm", "a4");
@@ -219,7 +219,7 @@ function LocationGraph() {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    // console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -228,7 +228,7 @@ function LocationGraph() {
     onChange: onSelectChange,
     type: locationChangeEnabled ? "checkbox" : undefined,
     onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log("selected Rows in SelectAll function", selectedRows);
+      // console.log("selected Rows in SelectAll function", selectedRows);
       if (!locationChangeEnabled) return;
       if (selected) {
         setSelectedRowKeys(stockData?.map((_, key) => key + 1) || []);

@@ -47,11 +47,11 @@ function OneGraph() {
   const onFinish = async () => {
     try {
       dispatch(SetLoading(true));
-      console.log("OneGraph.tsx onFinish", queryCode);
+      // console.log("OneGraph.tsx onFinish", queryCode);
       const response = await axios.get(
         `/api/products/queryOne?popCode=${queryCode}`
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 201) {
         setTableData([
           { label: "Units Remaining", value: response.data.unitsRemaining },

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const products =
       await Recording.find(filtersObject).populate("productCode");
-    console.log(products);
+    // console.log(products);
 
     let totalBuyPrice = 0;
     let totalSellPrice = 0;
@@ -46,8 +46,8 @@ export async function GET(request: NextRequest) {
     const avgSellPrice = totalSellPrice / totalSellUnits;
     const avgBuyTaxes = totalBuyTaxes / totalBuyUnits;
 
-    console.log("Average Buy Price:", avgBuyPrice);
-    console.log("Average Sell Price:", avgSellPrice);
+    // console.log("Average Buy Price:", avgBuyPrice);
+    // console.log("Average Sell Price:", avgSellPrice);
     return NextResponse.json(
       {
         unitsRemaining: totalBuyUnits - totalSellUnits,

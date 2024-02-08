@@ -30,7 +30,7 @@ function Sold() {
       const response = await axios.get(
         `api/products/check?code=${encodedCode}`
       );
-      console.log(response);
+      // console.log(response);
       const url = response.data?.data?.product?.productImage;
       setImageUrl(url);
 
@@ -41,7 +41,7 @@ function Sold() {
         }
       );
       setLocations(formattedLocations);
-      console.log(formattedLocations);
+      // console.log(formattedLocations);
 
       setAddUnits(false);
     } catch (error: any) {
@@ -61,12 +61,12 @@ function Sold() {
   const onFinish = async (values: any) => {
     try {
       dispatch(SetLoading(true));
-      console.log("SoldUnits.tsx onFinish", values);
+      // console.log("SoldUnits.tsx onFinish", values);
       const response = await axios.post(
         "api/products/recording?selling=1",
         values
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 201) {
         message.success(response.data.message);
       } else {

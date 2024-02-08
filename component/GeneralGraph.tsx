@@ -61,8 +61,8 @@ function GeneralGraph() {
       }
 
       if (response.status === 201) {
-        console.log("fetchGraphData");
-        console.log(response.data);
+        // console.log("fetchGraphData");
+        // console.log(response.data);
 
         setGraphData(response.data);
         setTableData(response.data.tableData);
@@ -83,11 +83,11 @@ function GeneralGraph() {
 
     if (input) {
       
-      console.log("asd", input);
+      // console.log("asd", input);
       try {
         
         const canvas = await html2canvas(input.nativeElement);
-        console.log("asd", canvas);
+        // console.log("asd", canvas);
         const imgData = canvas.toDataURL("image/png", 100);
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF("p", "mm", "a4");

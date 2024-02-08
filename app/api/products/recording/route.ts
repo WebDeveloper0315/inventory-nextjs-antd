@@ -12,16 +12,16 @@ export async function POST(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const buying = searchParams.get("buying");
-    console.log("buying parameter ", buying);
+    // console.log("buying parameter ", buying);
 
     const selling = searchParams.get("selling");
-    console.log("selling parameter ", selling);
+    // console.log("selling parameter ", selling);
 
     const returning = searchParams.get("returning");
-    console.log("returning parameter ", returning);
+    // console.log("returning parameter ", returning);
 
     const reqBody = await request.json();
-    console.log("recording/route.ts", reqBody);
+    // console.log("recording/route.ts", reqBody);
 
     const locationString = reqBody.location; // Assuming this is the locations string from reqBody
     let locationInfo: string = locationString;
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       locationInfo = locationString.substring(0, openingParenIndex);
     }
     
-    console.log("locationInfo", locationInfo);
+    // console.log("locationInfo", locationInfo);
 
     let modeString = "";
     let tax = 0;

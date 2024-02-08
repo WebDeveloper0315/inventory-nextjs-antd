@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const originalFilename = file?.name.replace(/\.[^/.]+$/, "");
     const sanitizedFilename = sanitizeFilename(originalFilename);
     const fileExtName = `${sanitizedFilename}_${uniqueSuffix}${fileExtension}`;
-    console.log("filename : " + fileExtName);
+    // console.log("filename : " + fileExtName);
     await writeFile(`${pathDist}/${fileExtName}`, buffer);
 
     const finalFilePath = "productImage/" + `${fileExtName}`;

@@ -115,7 +115,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error: any) {
       router.push("/login");
-      console.log(error);
+      // console.log(error);
       message.error(
         error.response.data.message || "Error during getting the current user"
       );

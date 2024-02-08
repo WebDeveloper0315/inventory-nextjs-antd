@@ -69,7 +69,7 @@ function calculateMetrics(graphData: any) {
     }
   );
 
-  console.log("totSellTaxes", totSellTaxes);
+  // console.log("totSellTaxes", totSellTaxes);
   const avgBuyPrice: any = {};
   const avgBuyTaxes: any = {};
   let allBuyPrice: any = 0;
@@ -85,7 +85,7 @@ function calculateMetrics(graphData: any) {
     allBuyTaxes += totBuyTaxes[productCode];
   }
 
-  console.log(allBuyTaxes);
+  // console.log(allBuyTaxes);
 
   const avgSellPrice: any = {};
   let allSellPrice: any = 0;
@@ -177,10 +177,10 @@ export async function GET(request: NextRequest) {
     const currentYear = new Date().getFullYear();
 
     const Vmonth = request.nextUrl.searchParams.get("month");
-    console.log("Month Value: ", Vmonth);
+    // console.log("Month Value: ", Vmonth);
 
     const Vyear = request.nextUrl.searchParams.get("year");
-    console.log("Month Value: ", Vyear);
+    // console.log("Month Value: ", Vyear);
 
     const yearlyData: any = [];
     const yearlyDataForPdf = [];
@@ -224,7 +224,7 @@ export async function GET(request: NextRequest) {
       // console.log("queryAll/route.ts  ", graphData);
 
       const metrics = calculateMetrics(graphData);
-      console.log(metrics);
+      // console.log(metrics);
 
       const sortedTotSellUnits = Object.fromEntries(
         Object.entries(metrics.totSellUnits).sort(
@@ -261,7 +261,7 @@ export async function GET(request: NextRequest) {
           ([, a], [, b]) => (b as any) - (a as any)
         )
       );
-      console.log("sorted sell units: ", sortedTotSellUnits);
+      // console.log("sorted sell units: ", sortedTotSellUnits);
 
       const monthlyData = {
         key: i,
@@ -450,7 +450,7 @@ export async function GET(request: NextRequest) {
       };
       yearlyDataForPdf.push(monthlyDataForPDF)
     }
-    console.log(yearlyData);
+    // console.log(yearlyData);
 
     return NextResponse.json(
       {

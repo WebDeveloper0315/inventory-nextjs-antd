@@ -8,7 +8,7 @@ connectDB();
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { updating, locationMessage, selectedLocations, status } = body;
-  console.log('selected locations', selectedLocations)
+  // console.log('selected locations', selectedLocations)
 
   try {
     const locationQuery = await Location.findOne({ location: locationMessage });

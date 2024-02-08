@@ -21,7 +21,7 @@ function NewUnits() {
       );
 
       const url = response.data?.data?.product?.productImage;
-      console.log("URL ", response);
+      // console.log("URL ", response);
 
       setImageUrl(url);
       setAddUnits(false);
@@ -55,12 +55,12 @@ function NewUnits() {
   const onFinish = async (values: any) => {
     try {
       dispatch(SetLoading(true));
-      console.log("NewUnits.tsx onFinish", values);
+      // console.log("NewUnits.tsx onFinish", values);
       const response = await axios.post(
         "api/products/recording?buying=1",
         values
       );
-      console.log(response);
+      // console.log(response);
       if (response.data.success === true) {
         message.success(response.data.message);
       } else {

@@ -20,7 +20,7 @@ async function seed() {
     const collection = db.collection('users'); // Replace 'users' with your desired collection name
     await collection.insertMany(seedData);
 
-    console.log('Seed data inserted successfully!');
+    // console.log('Seed data inserted successfully!');
 
     // Close the MongoDB connection
     client.close();

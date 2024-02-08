@@ -8,10 +8,10 @@ connectDB();
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
-  console.log("Product Code: ", code);
+  // console.log("Product Code: ", code);
 
   const locationQuery = request.nextUrl.searchParams.get("location");
-  console.log("location Code: ", locationQuery);
+  // console.log("location Code: ", locationQuery);
   try {
     // Find the product in MongoDB using the product code
     if(code){
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       }
 
       const allData = await Stock.find({ productCode: code });
-      console.log(allData);
+      // console.log(allData);
 
       const stockData = allData.map((oneData) => {
         return {
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
         allData = await Stock.find({ stocks: { $gt: 0 }, location: locationQuery });
       }
       
-      console.log('location query', allData);
+      // console.log('location query', allData);
 
       const stockData = allData.map((oneData: any, index: any) => {
         return {
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       {
         locationData = "true"
       }
-      console.log("locationData", locationData)
+      // console.log("locationData", locationData)
       if(locationData && allData.length > 0){
         return NextResponse.json(
           {

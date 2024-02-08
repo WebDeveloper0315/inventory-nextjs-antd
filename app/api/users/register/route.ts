@@ -13,7 +13,7 @@ connectDB();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    console.log(reqBody)
+    // console.log(reqBody)
     // check if user already exists
     const user = await User.findOne({ name: reqBody.name });
     if (user) {
