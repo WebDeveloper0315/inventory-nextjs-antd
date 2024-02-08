@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 import React, { useEffect, useState } from "react";
 import { ConfigProvider, message } from "antd";
@@ -128,6 +129,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
     if (pathname !== "/login" && pathname !== "/register" && !currentUser) {
       getCurrentUser();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const onLogout = async () => {

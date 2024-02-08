@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 import React, { useState } from "react";
 import { Upload, Button, Image, Input, Form, message } from "antd";
