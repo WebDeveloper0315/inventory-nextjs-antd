@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
     await validateJWT(request);
 
     const { searchParams } = new URL(request.url);
+    // console.log('search parameter', searchParams)
     const buying = searchParams.get("buying");
     // console.log("buying parameter ", buying);
 
@@ -40,8 +41,10 @@ export async function POST(request: NextRequest) {
     } else if (selling) {
       modeString = "selling";
       tax = reqBody.taxes;
-    } else if (returning) {
+    } else if (returning === 'store') {
       modeString = "returning";
+    } else if (returning === 'bin') {
+      modeString = "lost";
     }
 
     // const stock = await Stock.findOne({ productCode: reqBody.code,  pricePerUnit: reqBody.pricePerUnit})
@@ -65,19 +68,21 @@ export async function POST(request: NextRequest) {
             { message: "Stock not Enough!", success: false },
             { status: 400 }
           );
-      } else if (returning) {
+      } else if (returning === 'store') {
         stock.stocks += Number(reqBody.units);
       }
       await stock.save();
     } else {
-      const newStock = new Stock({
-        productCode: reqBody.code,
-        pricePerUnit: reqBody.pricePerUnit,
-        stocks: reqBody.units,
-        location: locationInfo,
-      });
-
-      await newStock.save();
+      if(modeString !== 'lost'){
+        const newStock = new Stock({
+          productCode: reqBody.code,
+          pricePerUnit: reqBody.pricePerUnit,
+          stocks: reqBody.units,
+          location: locationInfo,
+        });
+        await newStock.save();
+      }
+      
     }
 
     const newRecording = new Recording({

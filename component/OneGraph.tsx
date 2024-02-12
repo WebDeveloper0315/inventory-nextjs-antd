@@ -115,7 +115,7 @@ function OneGraph() {
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
               <div className="flex flex-col items-center justify-center">
-                <div className="flex flex-col items-center">
+                <div className="flex w-1/2 flex-col items-center">
                   <p>Is this product?</p>
                   <Image src={imageUrl} alt="Product Image" />
                 </div>

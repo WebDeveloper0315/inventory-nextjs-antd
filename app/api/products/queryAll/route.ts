@@ -13,6 +13,7 @@ function calculateMetrics(graphData: any) {
   const totBuyTaxes: any = {};
   const totSellTaxes: any = {};
   const totReturnedUnits: any = {};
+  const totTrashedUnits: any = {};
   graphData.forEach(
     (item: {
       productCode: any;
@@ -59,12 +60,27 @@ function calculateMetrics(graphData: any) {
           }
         }
       } else if (mode === "returning") {
+        if (!totSellPrice[productCode]){
+          totSellPrice[productCode] = 0
+        }
+        if (!totSellUnits[productCode]){
+          totSellUnits[productCode] = 0
+        }
+
         totSellPrice[productCode] -= pricePerUnit * units;
         totSellUnits[productCode] -= units;
 
         if (!totReturnedUnits[productCode])
           totReturnedUnits[productCode] = units;
         else totReturnedUnits[productCode] += units;
+      } else if(mode === 'lost') {
+        if (!totSellPrice[productCode]){
+          totSellPrice[productCode] = 0
+        }
+        totSellPrice[productCode] -= pricePerUnit * units;
+
+        if(!totTrashedUnits[productCode]) totTrashedUnits[productCode] = 0
+        totTrashedUnits[productCode] += units
       }
     }
   );
@@ -105,6 +121,11 @@ function calculateMetrics(graphData: any) {
     allReturnedUnits += totReturnedUnits[productCode];
   }
 
+  let allTrashedUnits: any = 0;
+  for (const productCode in totTrashedUnits) {
+    allTrashedUnits += totTrashedUnits[productCode];
+  }
+
   // console.log(avgSellPrice);
 
   const profitCode: any = {};
@@ -137,8 +158,25 @@ function calculateMetrics(graphData: any) {
           }
         }
       } else if (mode === "returning") {
+        if(!avgBuyPrice[productCode]) avgBuyPrice[productCode] = 0
+
         const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+        
+        if (!profitCode[productCode]) profitCode[productCode] = 0
+        
         profitCode[productCode] -= profit;
+        
+        if (market !== undefined) {
+          profitMarket[market] -= profit;
+        }
+        allProfit -= profit;
+      } else if(mode === 'lost'){
+        const profit = pricePerUnit * units;
+
+        if (!profitCode[productCode]) profitCode[productCode] = 0
+        
+        profitCode[productCode] -= profit;
+        
         if (market !== undefined) {
           profitMarket[market] -= profit;
         }
@@ -155,6 +193,7 @@ function calculateMetrics(graphData: any) {
     totBuyTaxes,
     totSellTaxes,
     totReturnedUnits,
+    totTrashedUnits,
     avgBuyPrice,
     avgBuyTaxes,
     allBuyPrice,
@@ -164,6 +203,7 @@ function calculateMetrics(graphData: any) {
     allSellUnits,
     allSellTaxes,
     allReturnedUnits,
+    allTrashedUnits,
     profitCode,
     profitMarket,
     allProfit,
@@ -258,6 +298,12 @@ export async function GET(request: NextRequest) {
       );
       const sortedReturnedUnitsValue = Object.fromEntries(
         Object.entries(metrics.totReturnedUnits).sort(
+          ([, a], [, b]) => (b as any) - (a as any)
+        )
+      );
+
+      const sortedTrashedUnitsValue = Object.fromEntries(
+        Object.entries(metrics.totTrashedUnits).sort(
           ([, a], [, b]) => (b as any) - (a as any)
         )
       );
@@ -358,6 +404,18 @@ export async function GET(request: NextRequest) {
               })
             ),
           },
+          {
+            key: `${i}08`,
+            name: "Items Trashed",
+            value: metrics.allTrashedUnits,
+            children: Object.entries(sortedTrashedUnitsValue).map(
+              ([vKey, priceValue], index) => ({
+                key: `${i}08${index + 1}`,
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
         ],
       };
 
@@ -440,6 +498,16 @@ export async function GET(request: NextRequest) {
             name: "Items Returned",
             value: metrics.allReturnedUnits,
             children: Object.entries(sortedReturnedUnitsValue).map(
+              ([vKey, priceValue], index) => ({
+                name: vKey,
+                value: priceValue,
+              })
+            ),
+          },
+          {
+            name: "Items Trashed",
+            value: metrics.allTrashedUnits,
+            children: Object.entries(sortedTrashedUnitsValue).map(
               ([vKey, priceValue], index) => ({
                 name: vKey,
                 value: priceValue,

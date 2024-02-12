@@ -5,13 +5,13 @@ import {
   Form,
   Image,
   Input,
-  Popconfirm,
   Select,
   Tooltip,
   message,
+  Modal 
 } from "antd";
 import React, { useState } from "react";
-import { InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
@@ -23,20 +23,22 @@ function Returning() {
   const [form] = Form.useForm();
 
   const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoadingStore, setConfirmLoadingStore] = useState(false);
+  const [confirmLoadingBin, setConfirmLoadingBin] = useState(false);
   const [locations, setLocations] = useState([]);
   const { Option } = Select;
+  
 
   const showPopconfirm = () => {
     setOpen(true);
   };
 
-  const handleOk = async (formValues: any) => {
+  const handleBin = async (formValues: any) => {
     try {
-      setConfirmLoading(true);
-      // console.log("returning.tsx onFinish", formValues);
+      setConfirmLoadingBin(true);
+      console.log("returning.tsx onFinish", formValues);
       const response = await axios.post(
-        "api/products/recording?returning=1",
+        "api/products/recording?returning=bin",
         formValues
       );
       // console.log(response);
@@ -51,7 +53,31 @@ function Returning() {
       message.error("Something went wrong");
     } finally {
       setOpen(false);
-      setConfirmLoading(false);
+      setConfirmLoadingBin(false);
+    }
+  };
+
+  const handleStore = async (formValues: any) => {
+    try {
+      setConfirmLoadingStore(true);
+      // console.log("returning.tsx onFinish", formValues);
+      const response = await axios.post(
+        "api/products/recording?returning=store",
+        formValues
+      );
+      // console.log(response);
+      if (response.status === 201) {
+        message.success(response.data.message);
+      } else {
+        message.error(response.data.message || "Something Went Wrong!");
+      }
+      setImageUrl("");
+    } catch (error: any) {
+      // console.log(error)
+      message.error("Something went wrong");
+    } finally {
+      setOpen(false);
+      setConfirmLoadingStore(false);
     }
   };
 
@@ -66,7 +92,7 @@ function Returning() {
       const response = await axios.get("api/locations");
       // console.log(response.data.locations);
       const locationsArray = response.data?.locations;
-      // I met some errors
+      
       const formattedLocations = locationsArray.map(
         (location: { location: any }) => {
           return location.location;
@@ -135,6 +161,8 @@ function Returning() {
       dispatch(SetLoading(false));
     }
   };
+
+  
 
   return (
     <div>
@@ -229,7 +257,7 @@ function Returning() {
                           </Select>
                         </Form.Item>
 
-                        <Popconfirm
+                        {/* <Popconfirm
                           title="Confirm Returning"
                           description="Are you sure return this item?"
                           open={open}
@@ -240,17 +268,41 @@ function Returning() {
                             <QuestionCircleOutlined style={{ color: "red" }} />
                           }
                           className="my-3"
-                        >
+                        > */}
                           <Button
                             type="primary"
                             onClick={showPopconfirm}
                             // htmlType="submit"
-                            // className="my-3"
+                            className="my-3"
                             block
                           >
                             Confirm
                           </Button>
-                        </Popconfirm>
+                          <Modal
+                            open={open}
+                            title="Confirm Returning"
+                            onOk={handleStore}
+                            onCancel={handleCancel}
+                            centered
+                            
+                            footer={[
+                              <Button key="submit" type="primary" loading={confirmLoadingStore} onClick={() => handleStore(form.getFieldsValue())}>
+                                Yes(To the Store)
+                              </Button>,
+                              <Button key="submit" type="primary" loading={confirmLoadingBin} onClick={() => handleBin(form.getFieldsValue())} danger>
+                                Yes(To the Bin)
+                              </Button>,
+                              <Button
+                                key="back"
+                                onClick={handleCancel}
+                              >
+                                No
+                              </Button>,
+                            ]}
+                          >
+                            <p>Are you sure return this item?</p>
+                          </Modal>
+                        {/* </Popconfirm> */}
                       </div>
                     )}
                   </div>
