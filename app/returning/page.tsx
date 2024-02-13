@@ -8,17 +8,30 @@ import {
   Select,
   Tooltip,
   message,
-  Modal 
+  Modal,
+  Table,
 } from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
+import type { TableRowSelection } from "antd/lib/table/interface";
+
+interface tableDataItem {
+  key: Number;
+  CreatedAt: Date;
+  pricePerUnit: Number;
+  units: Number;
+  market: String;
+  taxes: Number;
+  location: String;
+}
 
 function Returning() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
+  const [productCode, setproductCode] = useState("");
   const [addUnits, setAddUnits] = useState(false);
   const [form] = Form.useForm();
 
@@ -26,12 +39,45 @@ function Returning() {
   const [confirmLoadingStore, setConfirmLoadingStore] = useState(false);
   const [confirmLoadingBin, setConfirmLoadingBin] = useState(false);
   const [locations, setLocations] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState<any>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
   const { Option } = Select;
-  
 
   const showPopconfirm = () => {
     setOpen(true);
   };
+
+  const rowSelection: TableRowSelection<tableDataItem> = {
+    type: "radio", // Allow single row selection
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedRowKeys(selectedRowKeys);
+      setSelectedRow(selectedRows);
+      console.log("selectedRows")
+    },
+    selectedRowKeys,
+    onSelect: (
+      record: any,
+      selected: boolean,
+      selectedRows: any,
+      nativeEvent: Event
+    ) => {
+      // Update the state with the selected row data
+      setSelectedRow(record);
+    },
+  };
+
+  React.useEffect(() => {
+    if (selectedRow) {
+      // Update the form fields with selected row data
+      form.setFieldsValue({
+        pricePerUnit: selectedRow.pricePerUnit,
+        market: selectedRow.market,
+        location: selectedRow.location,
+        // Add more fields as needed
+      });
+    }
+  }, [selectedRow, form]);
 
   const handleBin = async (formValues: any) => {
     try {
@@ -81,6 +127,26 @@ function Returning() {
     }
   };
 
+  const getSellingHistory = async (values: any) => {
+    try {
+      dispatch(SetLoading(true));
+      console.log("OK", values);
+      const response = await axios.get(
+        `api/products/recording?returning=${productCode}`,
+        values
+      );
+
+      console.log(response);
+
+      const stockData = response.data?.data?.historyData;
+      setTableData(stockData);
+    } catch (error: any) {
+      message.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      dispatch(SetLoading(false));
+    }
+  };
+
   const handleCancel = () => {
     // console.log("Clicked cancel button");
     setOpen(false);
@@ -92,13 +158,14 @@ function Returning() {
       const response = await axios.get("api/locations");
       // console.log(response.data.locations);
       const locationsArray = response.data?.locations;
-      
+
       const formattedLocations = locationsArray.map(
         (location: { location: any }) => {
           return location.location;
         }
       );
       setLocations(formattedLocations);
+      await getSellingHistory("asd");
       setAddUnits(true);
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
@@ -122,6 +189,8 @@ function Returning() {
       );
 
       const url = response.data?.data?.product?.productImage;
+
+      setproductCode(code);
       setImageUrl(url);
       setAddUnits(false);
     } catch (error: any) {
@@ -162,7 +231,41 @@ function Returning() {
     }
   };
 
-  
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt: Date) => (
+        <span>{new Date(createdAt).toISOString().replace(/T/, ' ').replace(/\..+/, '')}</span>
+      ),
+    },
+    {
+      title: "Price Per Unit",
+      dataIndex: "pricePerUnit",
+      key: "value",
+    },
+    {
+      title: "Units",
+      dataIndex: "units",
+      key: "value",
+    },
+    {
+      title: "Market",
+      dataIndex: "market",
+      key: "value",
+    },
+    {
+      title: "Taxes(%)",
+      dataIndex: "taxes",
+      key: "value",
+    },
+    {
+      title: "Location",
+      dataIndex: "location",
+      key: "value",
+    },
+  ];
 
   return (
     <div>
@@ -173,7 +276,7 @@ function Returning() {
             <Form.Item
               label="Product Code"
               name="code"
-              className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+              className="w-full sm:w-1/2"
             >
               <Input
                 placeholder="#A0005"
@@ -187,44 +290,63 @@ function Returning() {
             </Form.Item>
           </div>
           <div className="flex justify-center ">
-            <div className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-              {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
-              {imageUrl && (
-                <div className="flex flex-col items-center">
-                  <div className="flex w-auto flex-col items-center">
-                    <p>Is this product?</p>
-                    <Image
-                      src={imageUrl}
-                      className="w-auto"
-                      alt="Product Image"
-                    />
-                  </div>
-                  <div className="flex flex-row items-center">
-                    <Button
-                      type="primary"
-                      style={{ margin: "10px" }}
-                      onClick={onShowUnits}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      type="default"
-                      style={{ margin: "10px" }}
-                      onClick={onHideUnits}
-                    >
-                      No
-                    </Button>
-                  </div>
+            {/* <div className="sm:w-1/2 md:w-1/3 lg:w-1/4"> */}
+            {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
+            {imageUrl && (
+              <div className="flex flex-col items-center">
+                <div className="flex w-full flex-col items-center sm:w-1/2">
+                  <p>Is this product?</p>
+                  <Image
+                    src={imageUrl}
+                    className="w-auto"
+                    alt="Product Image"
+                  />
+                </div>
+                <div className="flex flex-row items-center">
+                  <Button
+                    type="primary"
+                    style={{ margin: "10px" }}
+                    onClick={onShowUnits}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    type="default"
+                    style={{ margin: "10px" }}
+                    onClick={onHideUnits}
+                  >
+                    No
+                  </Button>
+                </div>
 
-                  <div className=" w-auto">
-                    {addUnits && (
+                <div className=" w-auto">
+                  {addUnits && (
+                    <>
+                      <div className="my-3">
+                        <h1>Selling History of {productCode} Product</h1>
+                        <hr />
+                        <Table
+                          columns={columns}
+                          rowSelection={rowSelection}
+                          dataSource={tableData}
+                          pagination={false}
+                          onRow={(record, rowIndex) => {
+                            return {
+                              onClick: event => {
+                                setSelectedRowKeys([record.key]);
+                                setSelectedRow(record);
+                              }
+                            }
+                          }}  
+                        />
+                      </div>
                       <div>
                         <Form.Item
-                          label="Sell Price"
+                          label="Sold Price"
                           name="pricePerUnit"
                           className="my-3"
                         >
-                          <Input placeholder="Sell Price" />
+                          <Input placeholder="Sold Price" />
                         </Form.Item>
 
                         <Form.Item
@@ -258,57 +380,65 @@ function Returning() {
                         </Form.Item>
 
                         {/* <Popconfirm
-                          title="Confirm Returning"
-                          description="Are you sure return this item?"
-                          open={open}
-                          onConfirm={() => handleOk(form.getFieldsValue())}
-                          okButtonProps={{ loading: confirmLoading }}
-                          onCancel={handleCancel}
-                          icon={
-                            <QuestionCircleOutlined style={{ color: "red" }} />
-                          }
-                          className="my-3"
-                        > */}
-                          <Button
-                            type="primary"
-                            onClick={showPopconfirm}
-                            // htmlType="submit"
-                            className="my-3"
-                            block
-                          >
-                            Confirm
-                          </Button>
-                          <Modal
-                            open={open}
                             title="Confirm Returning"
-                            onOk={handleStore}
+                            description="Are you sure return this item?"
+                            open={open}
+                            onConfirm={() => handleOk(form.getFieldsValue())}
+                            okButtonProps={{ loading: confirmLoading }}
                             onCancel={handleCancel}
-                            centered
-                            
-                            footer={[
-                              <Button key="submit" type="primary" loading={confirmLoadingStore} onClick={() => handleStore(form.getFieldsValue())}>
-                                Yes(To the Store)
-                              </Button>,
-                              <Button key="submit" type="primary" loading={confirmLoadingBin} onClick={() => handleBin(form.getFieldsValue())} danger>
-                                Yes(To the Bin)
-                              </Button>,
-                              <Button
-                                key="back"
-                                onClick={handleCancel}
-                              >
-                                No
-                              </Button>,
-                            ]}
-                          >
-                            <p>Are you sure return this item?</p>
-                          </Modal>
+                            icon={
+                              <QuestionCircleOutlined style={{ color: "red" }} />
+                            }
+                            className="my-3"
+                          > */}
+                        <Button
+                          type="primary"
+                          onClick={showPopconfirm}
+                          // htmlType="submit"
+                          className="my-3"
+                          block
+                        >
+                          Confirm
+                        </Button>
+                        <Modal
+                          open={open}
+                          title="Confirm Returning"
+                          onOk={handleStore}
+                          onCancel={handleCancel}
+                          centered
+                          footer={[
+                            <Button
+                              key="submit"
+                              type="primary"
+                              loading={confirmLoadingStore}
+                              onClick={() => handleStore(form.getFieldsValue())}
+                            >
+                              Yes(To the Store)
+                            </Button>,
+                            <Button
+                              key="submit"
+                              type="primary"
+                              loading={confirmLoadingBin}
+                              onClick={() => handleBin(form.getFieldsValue())}
+                              danger
+                            >
+                              Yes(To the Bin)
+                            </Button>,
+                            <Button key="back" onClick={handleCancel}>
+                              No
+                            </Button>,
+                          ]}
+                        >
+                          <p>Are you sure return this item?</p>
+                        </Modal>
                         {/* </Popconfirm> */}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+            {/* </div> */}
           </div>
         </Form>
       </div>

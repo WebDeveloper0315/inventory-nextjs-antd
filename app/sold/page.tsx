@@ -90,7 +90,7 @@ function Sold() {
             <Form.Item
               label="Product Code"
               name="code"
-              className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+              className="w-full sm:w-1/2 "
             >
               <Input
                 placeholder="#A0005"
@@ -104,93 +104,93 @@ function Sold() {
             </Form.Item>
           </div>
           <div className="flex justify-center ">
-            <div className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-              {imageUrl && (
-                <div className="flex flex-col items-center">
-                  <div className="flex w-auto flex-col items-center">
-                    <p>Is this product?</p>
-                    <Image
-                      src={imageUrl}
-                      className="w-auto"
-                      alt="Product Image"
-                    />
-                  </div>
-                  <div className="flex flex-row items-center">
-                    <Button
-                      type="primary"
-                      style={{ margin: "10px" }}
-                      onClick={onShowUnits}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      type="default"
-                      style={{ margin: "10px" }}
-                      onClick={onHideUnits}
-                    >
-                      No
-                    </Button>
-                  </div>
-
-                  <div className=" w-auto">
-                    {addUnits && (
-                      <div>
-                        <Form.Item
-                          label="Location"
-                          name="location"
-                          className="my-3 w-auto"
-                        >
-                          <Select placeholder="Select a location">
-                            {locations.map((location, index) => (
-                              <Option key={index} value={location}>
-                                {location}
-                              </Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          label="Selling Units"
-                          name="units"
-                          className=" my-3 w-auto"
-                        >
-                          <Input placeholder="units to sell" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Price per Unit"
-                          name="pricePerUnit"
-                          className="my-3"
-                        >
-                          <Input placeholder="Price per unit" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Market Place"
-                          name="market"
-                          className=" my-3 w-auto"
-                        >
-                          <Input placeholder="Market where you are selling" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Taxes(%)"
-                          name="taxes"
-                          className=" my-3 w-auto"
-                        >
-                          <Input placeholder="Tax" />
-                        </Form.Item>
-
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          className="my-3"
-                          block
-                        >
-                          Confirm
-                        </Button>
-                      </div>
-                    )}
-                  </div>
+            {/* <div className="sm:w-1/2 md:w-1/3 lg:w-1/4"> */}
+            {imageUrl && (
+              <div className="flex flex-col items-center">
+                <div className="flex  w-full flex-col items-center sm:w-1/2">
+                  <p>Is this product?</p>
+                  <Image
+                    src={imageUrl}
+                    className="w-auto"
+                    alt="Product Image"
+                  />
                 </div>
-              )}
-            </div>
+                <div className="flex flex-row items-center">
+                  <Button
+                    type="primary"
+                    style={{ margin: "10px" }}
+                    onClick={onShowUnits}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    type="default"
+                    style={{ margin: "10px" }}
+                    onClick={onHideUnits}
+                  >
+                    No
+                  </Button>
+                </div>
+
+                <div className=" w-auto">
+                  {addUnits && (
+                    <div>
+                      <Form.Item
+                        label="Location"
+                        name="location"
+                        className="my-3 w-auto"
+                      >
+                        <Select placeholder="Select a location">
+                          {locations.map((location, index) => (
+                            <Option key={index} value={location}>
+                              {location}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        label="Selling Units"
+                        name="units"
+                        className=" my-3 w-auto"
+                      >
+                        <Input placeholder="units to sell" />
+                      </Form.Item>
+                      <Form.Item
+                        label="Price per Unit"
+                        name="pricePerUnit"
+                        className="my-3"
+                      >
+                        <Input placeholder="Price per unit" />
+                      </Form.Item>
+                      <Form.Item
+                        label="Market Place"
+                        name="market"
+                        className=" my-3 w-auto"
+                      >
+                        <Input placeholder="Market where you are selling" />
+                      </Form.Item>
+                      <Form.Item
+                        label="Taxes(%)"
+                        name="taxes"
+                        className=" my-3 w-auto"
+                      >
+                        <Input placeholder="Tax" />
+                      </Form.Item>
+
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="my-3"
+                        block
+                      >
+                        Confirm
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {/* </div> */}
           </div>
         </Form>
       </div>

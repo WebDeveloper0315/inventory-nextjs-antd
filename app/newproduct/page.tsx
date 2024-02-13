@@ -23,9 +23,9 @@ function NewProduct() {
     <div>
       <PageTitle title='New Product'/>
       <div className='my-3'>
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} >
           <Col span={4}>
-
+            
           </Col>
           <Col span={8}>
             

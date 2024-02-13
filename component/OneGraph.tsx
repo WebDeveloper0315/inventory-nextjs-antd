@@ -97,8 +97,8 @@ function OneGraph() {
   return (
     <div>
       <Form layout="vertical">
-        <div className="flex w-auto justify-center">
-          <Form.Item label="Product Code" name="code" className="w-auto">
+        <div className="flex w-full justify-center">
+          <Form.Item label="Product Code" name="code" className="w-full">
             <Input
               placeholder="#A0005"
               onPressEnter={handleEnterPress}
@@ -110,13 +110,13 @@ function OneGraph() {
             />
           </Form.Item>
         </div>
-        <div className="flex justify-center ">
+        <div className="flex justify-center w-full">
           <div>
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
-              <div className="flex flex-col items-center justify-center">
-                <div className="flex w-1/2 flex-col items-center">
-                  <p>Is this product?</p>
+              <div className="flex w-full flex-col items-center justify-center">
+                <div className="flex w-full  flex-col items-center">
+                  <p>Is this product?</p> 
                   <Image src={imageUrl} alt="Product Image" />
                 </div>
                 <div className="flex flex-row items-center">

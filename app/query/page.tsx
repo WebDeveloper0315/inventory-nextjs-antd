@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 import GeneralGraph from "@/component/GeneralGraph";
 import LocationGraph from "@/component/LocationGraph";
@@ -33,7 +34,7 @@ function Query() {
     <div className="my-3">
       <PageTitle title="Query" />
       <div className="flex flex-col items-center">
-        <div className="flex justify-center sm:w-1/2 md:w-2/3 lg:w-3/4">
+        <div className="flex w-full justify-center sm:w-1/2">
           <Button
             type="primary"
             block
@@ -60,10 +61,10 @@ function Query() {
           </Button>
         </div>
 
-        <div className="mt-6 ">
+        <div className="mt-6 flex w-full justify-center sm:w-1/2">
           {showOne && <OneGraph />}
           {showGeneral && <GeneralGraph />}
-          {showLocation && <LocationGraph/>}
+          {showLocation && <LocationGraph />}
         </div>
       </div>
     </div>

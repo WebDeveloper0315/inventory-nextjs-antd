@@ -81,7 +81,7 @@ function NewUnits() {
           <Form.Item
             label="Product Code"
             name="code"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input
               placeholder="#A0005"
@@ -95,7 +95,7 @@ function NewUnits() {
           </Form.Item>
         </div>
         <div className="flex justify-center ">
-          <div className="sm:w-1/2 md:w-1/3 lg:w-1/4">
+          <div className="w-full sm:w-1/2">
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
               <div className="flex flex-col items-center">

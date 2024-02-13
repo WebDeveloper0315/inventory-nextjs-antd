@@ -69,7 +69,7 @@ function NewProductRegister() {
           <Form.Item
             label="Product Code"
             name="code"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="#A0005" />
           </Form.Item>
@@ -78,7 +78,7 @@ function NewProductRegister() {
           <Form.Item
             label="Product Image"
             name="image"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Dragger
               accept=".png,.jpg,.jpeg"
@@ -116,7 +116,7 @@ function NewProductRegister() {
           <Form.Item
             label="Units to Buying"
             name="units"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="Input the units to buy" />
           </Form.Item>
@@ -126,7 +126,7 @@ function NewProductRegister() {
           <Form.Item
             label="Price Per Unit"
             name="pricePerUnit"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="Input the price per unit" />
           </Form.Item>
@@ -136,7 +136,7 @@ function NewProductRegister() {
           <Form.Item
             label="Market Place"
             name="market"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="Market where you bought" />
           </Form.Item>
@@ -146,7 +146,7 @@ function NewProductRegister() {
           <Form.Item
             label="Tax(%)"
             name="taxes"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="Tax(%)" />
           </Form.Item>
@@ -156,7 +156,7 @@ function NewProductRegister() {
           <Form.Item
             label="Location"
             name="location"
-            className="sm:w-1/2 md:w-1/3 lg:w-1/4"
+            className="w-full sm:w-1/2"
           >
             <Input placeholder="location where you want to store" />
           </Form.Item>
