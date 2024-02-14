@@ -10,6 +10,7 @@ import {
   message,
   Modal,
   Table,
+  DatePicker,
 } from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -17,6 +18,10 @@ import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
 import type { TableRowSelection } from "antd/lib/table/interface";
+import dayjs, { Dayjs } from "dayjs";
+import localeData from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(localeData);
 
 interface tableDataItem {
   key: Number;
@@ -43,9 +48,34 @@ function Returning() {
   const [selectedRow, setSelectedRow] = useState<any>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
   const { Option } = Select;
+  const { RangePicker } = DatePicker;
+
+  const defaultStartDate = dayjs().subtract(1, "month");
+  const defaultEndDate = dayjs();
+  const defaultDateRange: [Dayjs, Dayjs] = [defaultStartDate, defaultEndDate];
+
+  const [selectedDateRange, setSelectedDateRange] = useState<[Dayjs, Dayjs]>([
+    dayjs().subtract(1, "month"),
+    dayjs(),
+  ]);
 
   const showPopconfirm = () => {
     setOpen(true);
+  };
+
+  const handleDateRangeChange = async (
+    dates: [Dayjs | null, Dayjs | null],
+    dateStrings: [string, string]
+  ) => {
+    if (dates[0] && dates[1]) {
+      // Handle the case when both start and end dates are not null
+      const [start, end] = dates;
+      setSelectedDateRange([start, end]);
+      await getSellingHistory({
+        start: start.format("YYYY-MM-DD"),
+        end: end.format("YYYY-MM-DD"),
+      });
+    }
   };
 
   const rowSelection: TableRowSelection<tableDataItem> = {
@@ -53,7 +83,7 @@ function Returning() {
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedRowKeys(selectedRowKeys);
       setSelectedRow(selectedRows);
-      console.log("selectedRows")
+      // console.log("selectedRows")
     },
     selectedRowKeys,
     onSelect: (
@@ -82,7 +112,7 @@ function Returning() {
   const handleBin = async (formValues: any) => {
     try {
       setConfirmLoadingBin(true);
-      console.log("returning.tsx onFinish", formValues);
+      // console.log("returning.tsx onFinish", formValues);
       const response = await axios.post(
         "api/products/recording?returning=bin",
         formValues
@@ -130,13 +160,13 @@ function Returning() {
   const getSellingHistory = async (values: any) => {
     try {
       dispatch(SetLoading(true));
-      console.log("OK", values);
-      const response = await axios.get(
-        `api/products/recording?returning=${productCode}`,
+      // console.log("OK", values);
+      const response = await axios.post(
+        `api/products/history?returning=${productCode}`,
         values
       );
 
-      console.log(response);
+      // console.log(response);
 
       const stockData = response.data?.data?.historyData;
       setTableData(stockData);
@@ -165,7 +195,14 @@ function Returning() {
         }
       );
       setLocations(formattedLocations);
-      await getSellingHistory("asd");
+
+      const [startDate, endDate] = selectedDateRange;
+
+      await getSellingHistory({
+        start: startDate.format("YYYY-MM-DD"),
+        end: endDate.format("YYYY-MM-DD"),
+      });
+
       setAddUnits(true);
     } catch (error: any) {
       message.error(error.response?.data?.message || "Something went wrong");
@@ -237,7 +274,12 @@ function Returning() {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (createdAt: Date) => (
-        <span>{new Date(createdAt).toISOString().replace(/T/, ' ').replace(/\..+/, '')}</span>
+        <span>
+          {new Date(createdAt)
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "")}
+        </span>
       ),
     },
     {
@@ -325,19 +367,25 @@ function Returning() {
                       <div className="my-3">
                         <h1>Selling History of {productCode} Product</h1>
                         <hr />
+                        <div className="my-3 block w-full text-center">
+                          <RangePicker
+                            defaultValue={defaultDateRange}
+                            onChange={handleDateRangeChange}
+                          />
+                        </div>
                         <Table
                           columns={columns}
                           rowSelection={rowSelection}
                           dataSource={tableData}
                           pagination={false}
-                          onRow={(record, rowIndex) => {
+                          onRow={(record: { key: any }, rowIndex: any) => {
                             return {
-                              onClick: event => {
+                              onClick: (event: any) => {
                                 setSelectedRowKeys([record.key]);
                                 setSelectedRow(record);
-                              }
-                            }
-                          }}  
+                              },
+                            };
+                          }}
                         />
                       </div>
                       <div>

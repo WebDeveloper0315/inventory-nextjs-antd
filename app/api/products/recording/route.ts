@@ -116,39 +116,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
-
-  try {
-    const { searchParams } = new URL(request.url);
-    const productCode = searchParams.get("returning");
-
-    // const reqBody = await request.json();
-
-    const recordingQuery = await Recording.find({productCode, mode: "selling"})
-
-    console.log('recordingQuery', recordingQuery)
-
-    const historyData = recordingQuery.map((oneData: any, index: any) => {
-      return {
-        key: index + 1,
-        productCode: oneData.productCode,
-        pricePerUnit: oneData.pricePerUnit,
-        units: oneData.units,
-        market: oneData.market,
-        taxes: oneData.taxes,
-        location: oneData.location,
-        createdAt: oneData.createdAt,
-      }
-    })
-
-    return NextResponse.json({
-      message: "History Data fetched successfully.",
-      data: {
-        historyData,
-      },
-    }, {status: 201,} )
-
-  } catch (error : any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
-  }
-}
