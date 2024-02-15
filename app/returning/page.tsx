@@ -325,7 +325,7 @@ function Returning() {
                 onPressEnter={handleEnterPress}
                 suffix={
                   <Tooltip title="Press Enter Key after entering...">
-                    <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                    <InfoCircleOutlined style={{ color: "rgba(255,255,255,0.45)" }} />
                   </Tooltip>
                 }
               />

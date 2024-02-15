@@ -17,6 +17,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import type { TableRowSelection } from "antd/lib/table/interface";
+import Divider from "./Divider";
 
 const { TextArea } = Input;
 interface StockDataItem {
@@ -248,7 +249,7 @@ function LocationGraph() {
               onPressEnter={handleEnterPress}
               suffix={
                 <Tooltip title="Press Enter Key after entering...">
-                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                  <InfoCircleOutlined style={{ color: "rgba(255,255,255,0.45)" }} />
                 </Tooltip>
               }
               disabled={locationEnabled}
@@ -261,7 +262,7 @@ function LocationGraph() {
             >
               Get all location&apos;s Info
             </Checkbox>
-            <hr/>
+            <Divider/>
         </div>
 
         <div className="my-3">

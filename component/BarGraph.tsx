@@ -32,8 +32,17 @@ function BarGraph({ data }: any) {
             y: {
               beginAtZero: true,
               stacked: true,
+              grid: {
+                color: "gray",
+              }
             },
+            x: {
+              grid: {
+                color: "gray",
+              }
+            }
           },
+
         }}
       />
     </div>

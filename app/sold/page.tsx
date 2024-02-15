@@ -86,7 +86,7 @@ function Sold() {
       <PageTitle title="Sold" />
       <div>
         <Form layout="vertical" onFinish={onFinish}>
-          <div className="flex justify-center">
+          <div className="flex justify-center text-white">
             <Form.Item
               label="Product Code"
               name="code"
@@ -97,7 +97,7 @@ function Sold() {
                 onPressEnter={handleEnterPress}
                 suffix={
                   <Tooltip title="Press Enter Key after entering...">
-                    <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                    <InfoCircleOutlined style={{ color: "rgba(255,255,255,0.45)" }} />
                   </Tooltip>
                 }
               />

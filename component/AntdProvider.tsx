@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, message } from "antd";
+import { ConfigProvider, message, theme } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -148,14 +148,22 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
   return (
     <ConfigProvider
       theme={{
-        token: {
-          // Seed Token
-          colorPrimary: "#213555",
-          borderRadius: 2,
-
-          // Alias Token
-          colorBgContainer: "#f6ffed",
+        algorithm: theme.darkAlgorithm,
+        components: {
+          Button: {
+            algorithm: true,
+            colorPrimary: "#213555",
+            controlHeight: 45
+          }
         },
+        // token: {
+        //   // Seed Token
+        //   colorPrimary: "#213555",
+        //   borderRadius: 2,
+
+        //   // Alias Token
+        //   colorBgContainer: "#f6ffed",
+        // },
       }}
     >
       {loading && <Loader />}

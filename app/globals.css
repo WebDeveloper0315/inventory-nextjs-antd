@@ -38,7 +38,7 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  color: #636262;
+  /* color: #636262; */
 }
 
 /* button {
@@ -81,11 +81,11 @@ button {
   border-radius: 2px !important;
 }
 
-label {
+/* label {
   margin: 0px !important;
   padding: 0px !important;
   color: #353535 !important;
-}
+} */
 
 a {
   text-decoration: none;
@@ -104,4 +104,9 @@ i {
 table {
   border: 1px solid #c7c7c7 !important;
   border-radius: 5px;
+}
+
+.ant-btn {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
 }
