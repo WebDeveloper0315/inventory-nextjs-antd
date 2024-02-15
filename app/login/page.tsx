@@ -51,7 +51,7 @@ export default function Login() {
 
           <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
             <Form layout="vertical" className="space-y-6" onFinish={onFinish}>
-              <Form.Item label="Name or ID" name="name">
+              <Form.Item label="Name" name="name">
                 <Input
                   placeholder="Enter your username"
                   prefix={<UserOutlined className="site-form-item-icon" />}
