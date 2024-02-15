@@ -6,6 +6,7 @@ const nextConfig = {
     DB_URI: config.DB_URI,
     JWT_SECRET: config.JWT_SECRET,
   },
+  
   // webpack: (config) => {
   //     config.experiments = config.experiments || {}
   //     config.experiments.topLevelAwait = true
