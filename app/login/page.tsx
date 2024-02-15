@@ -54,6 +54,7 @@ export default function Login() {
               <Form.Item label="Name" name="name">
                 <Input
                   placeholder="Enter your username"
+                  // eslint-disable-next-line tailwindcss/no-custom-classname
                   prefix={<UserOutlined className="site-form-item-icon" />}
                   suffix={
                     <Tooltip title="You can login with the name.">

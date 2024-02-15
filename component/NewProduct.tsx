@@ -164,7 +164,7 @@ function NewProductRegister() {
 
         <div className="flex justify-center">
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="my-2">
+            <Button type="primary" htmlType="submit" className="my-3" block>
               Upload
             </Button>
           </Form.Item>

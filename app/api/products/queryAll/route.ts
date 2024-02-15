@@ -14,6 +14,7 @@ function calculateMetrics(graphData: any) {
   const totSellTaxes: any = {};
   const totReturnedUnits: any = {};
   const totTrashedUnits: any = {};
+  let marketString: any = {};
   graphData.forEach(
     (item: {
       productCode: any;
@@ -24,7 +25,7 @@ function calculateMetrics(graphData: any) {
       taxes: any;
     }) => {
       const { productCode, mode, pricePerUnit, units, market, taxes } = item;
-      console.log(market);
+      marketString = market;
       if (mode === "buying") {
         if (!totBuyPrice[productCode])
           totBuyPrice[productCode] = pricePerUnit * units;
@@ -207,6 +208,7 @@ function calculateMetrics(graphData: any) {
     profitCode,
     profitMarket,
     allProfit,
+    marketString,
   };
 }
 
