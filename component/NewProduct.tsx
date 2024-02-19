@@ -54,7 +54,7 @@ function NewProductRegister() {
         message.info("Selected Product exists. Try again!");
       }
     } catch (error: any) {
-      console.log("error during product registering", error);
+      // console.log("error during product registering", error);
       message.error(error.response.data.message || "Something went wrong");
     } finally {
       dispatch(SetLoading(false));
