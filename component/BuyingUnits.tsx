@@ -9,6 +9,10 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 function NewUnits() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
+  // const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+  const PATH = process.env.NEXT_PUBLIC_IMAGES_PATH;
+
+  console.log("PATH", PATH);
 
   const handleSubmit = async (code: string) => {
     try {
@@ -22,7 +26,7 @@ function NewUnits() {
 
       const url = response.data?.data?.product?.productImage;
       // console.log("URL ", response);
-
+      // const fullImageUrl = `${PATH}/${url}`;
       setImageUrl(url);
       setAddUnits(false);
     } catch (error: any) {
@@ -102,10 +106,12 @@ function NewUnits() {
                 <div className="flex w-auto flex-col items-center">
                   <p>Is this product?</p>
                   <Image
-                    src={imageUrl}
-                    className="w-auto"
+                    src={`/api/image?key=${imageUrl}`}
+                    className="w-full"
                     alt="Product Image"
                   />
+                  {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+                  {/* <img src={`/api/image?key=${imageUrl}`} className="w-full"/> */}
                 </div>
                 <div className="flex flex-row items-center">
                   <Button

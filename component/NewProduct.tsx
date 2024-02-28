@@ -39,7 +39,8 @@ function NewProductRegister() {
         if (resImage.status === 201) {
           // console.log("adadsf", resImage);
           // const responseData = await resImage.data.json()
-          const finalFilePath = resImage.data.httpfilepath;
+          // const finalFilePath = resImage.data.httpfilepath;
+          const finalFilePath = resImage.data.filename;
 
           values.imagePath = finalFilePath;
           delete values.image;

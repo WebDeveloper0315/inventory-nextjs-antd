@@ -22,10 +22,17 @@ export async function POST(request: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  const PATH: string| undefined = process.env.NEXT_PUBLIC_IMAGES_PATH;
+  if(!PATH) {
+    throw new Error('NEXT_PUBLIC_IMAGES_PATH is not defined in the environment variables');
+  }
+  
 
-  const pathDist: string = join(process.cwd(), "/public/productImage");
+  const pathDist: string = join(process.cwd(), "public/", PATH);
   //   const relativeUploadDir = `${dateFn.format(Date.now(), "dd-MM-Y")}`;
   //   const uploadDir = join(pathDist, relativeUploadDir);
+
+  console.log("Path", pathDist);
 
   try {
     await stat(pathDist);

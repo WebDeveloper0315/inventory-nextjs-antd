@@ -110,7 +110,7 @@ function Sold() {
                 <div className="flex  w-full flex-col items-center sm:w-1/2">
                   <p>Is this product?</p>
                   <Image
-                    src={imageUrl}
+                    src={`/api/image?key=${imageUrl}`}
                     className="w-auto"
                     alt="Product Image"
                   />

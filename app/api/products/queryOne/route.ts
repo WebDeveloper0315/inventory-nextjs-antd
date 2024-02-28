@@ -26,6 +26,10 @@ export async function GET(request: NextRequest) {
     let totalSellUnits = 0;
     let totalSellTaxes = 0;
     let totalBuyTaxes = 0;
+    let totalReturnUnits = 0;
+    let totalReturnPrice = 0;
+    let totalTrashedUnits = 0;
+    let totalTrashedPrice = 0;
 
     products.forEach((product: any) => {
       if (product.mode === "buying") {
@@ -37,8 +41,11 @@ export async function GET(request: NextRequest) {
         totalSellUnits += product.units;
         totalSellTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
       } else if ( product.mode === "returning") {
-        totalSellUnits -= product.units;
-        totalSellPrice -= product.pricePerUnit * product.units;
+        totalReturnUnits += product.units;
+        totalReturnPrice += product.pricePerUnit * product.units;
+      } else if ( product.mode === "lost") {
+        totalTrashedUnits += product.units;
+        totalTrashedPrice += product.pricePerUnit * product.units;
       }
     });
 
@@ -50,12 +57,14 @@ export async function GET(request: NextRequest) {
     // console.log("Average Sell Price:", avgSellPrice);
     return NextResponse.json(
       {
-        unitsRemaining: totalBuyUnits - totalSellUnits,
+        unitsRemaining: totalBuyUnits - totalSellUnits + totalReturnUnits,
         unitsSold: totalSellUnits,
+        unitsReturned: totalReturnUnits,
+        unitsTrashed: totalTrashedUnits,
         averageBuyPrice: avgBuyPrice,
         averageSellPrice: avgSellPrice,
-        profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes,
-        profitSale: totalSellUnits * (avgSellPrice - avgBuyPrice) - totalSellTaxes + totalSellUnits * avgBuyTaxes,
+        profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes - totalReturnPrice - totalTrashedPrice,
+        profitSale: (totalSellUnits - totalReturnUnits - totalTrashedUnits) * (avgSellPrice - avgBuyPrice) - totalSellTaxes + totalSellUnits * avgBuyTaxes,
         averageMoneyInTax: totalSellTaxes / totalSellUnits,
         
       },

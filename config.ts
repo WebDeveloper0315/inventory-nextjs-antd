@@ -1,4 +1,4 @@
-const DB_URI="mongodb+srv://superstar9772:Star123!@#@cluster0.ysxjxvp.mongodb.net/inventory-nextjs-antd"
+const DB_URI="mongodb://127.0.0.1:27017/inventory-nextjs-antd"
 const JWT_SECRET="blackghost"
 
 module.exports = {

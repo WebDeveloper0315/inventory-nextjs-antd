@@ -5,7 +5,7 @@ import {
   Form,
   Image,
   Input,
-  Select,
+  
   Tooltip,
   message,
   Modal,
@@ -43,11 +43,11 @@ function Returning() {
   const [open, setOpen] = useState(false);
   const [confirmLoadingStore, setConfirmLoadingStore] = useState(false);
   const [confirmLoadingBin, setConfirmLoadingBin] = useState(false);
-  const [locations, setLocations] = useState([]);
+  // const [locations, setLocations] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [selectedRow, setSelectedRow] = useState<any>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
-  const { Option } = Select;
+  // const { Option } = Select;
   const { RangePicker } = DatePicker;
 
   const defaultStartDate = dayjs().subtract(1, "month");
@@ -185,16 +185,16 @@ function Returning() {
   const onShowUnits = async () => {
     try {
       dispatch(SetLoading(true));
-      const response = await axios.get("api/locations");
-      // console.log(response.data.locations);
-      const locationsArray = response.data?.locations;
+      // const response = await axios.get("api/locations");
+      // // console.log(response.data.locations);
+      // const locationsArray = response.data?.locations;
 
-      const formattedLocations = locationsArray.map(
-        (location: { location: any }) => {
-          return location.location;
-        }
-      );
-      setLocations(formattedLocations);
+      // const formattedLocations = locationsArray.map(
+      //   (location: { location: any }) => {
+      //     return location.location;
+      //   }
+      // );
+      // setLocations(formattedLocations);
 
       const [startDate, endDate] = selectedDateRange;
 
@@ -339,10 +339,11 @@ function Returning() {
                 <div className="flex w-full flex-col items-center sm:w-1/2">
                   <p>Is this product?</p>
                   <Image
-                    src={imageUrl}
-                    className="w-auto"
+                    src={`/api/image?key=${imageUrl}`}
+                    className="w-full"
                     alt="Product Image"
                   />
+                  {/* <img src={`/api/image?key=${imageUrl}`} className="w-full"/> */}
                 </div>
                 <div className="flex flex-row items-center">
                   <Button
@@ -418,13 +419,14 @@ function Returning() {
                           name="location"
                           className=" my-3 w-auto"
                         >
-                          <Select placeholder="Select a location">
+                          {/* <Select placeholder="Select a location">
                             {locations.map((location: any, index: any) => (
                               <Option key={index} value={location}>
                                 {location}
                               </Option>
                             ))}
-                          </Select>
+                          </Select> */}
+                          <Input placeholder = "Input a location"/>
                         </Form.Item>
 
                         {/* <Popconfirm

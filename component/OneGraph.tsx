@@ -55,10 +55,12 @@ function OneGraph() {
       if (response.status === 201) {
         setTableData([
           { label: "Units Remaining", value: response.data.unitsRemaining },
-          { label: "Units sold", value: response.data.unitsSold },
-          { label: "Average buy price", value: response.data.averageBuyPrice },
+          { label: "Units Sold", value: response.data.unitsSold },
+          { label: "Units Returned", value: response.data.unitsReturned},
+          { label: "Units Trashed", value: response.data.unitsTrashed},
+          { label: "Average Buy Price", value: response.data.averageBuyPrice },
           {
-            label: "Average sell price",
+            label: "Average Sell Price",
             value: response.data.averageSellPrice,
           },
           { label: "Product Profit", value: response.data.profitProduct },
@@ -104,20 +106,25 @@ function OneGraph() {
               onPressEnter={handleEnterPress}
               suffix={
                 <Tooltip title="Press Enter Key after entering...">
-                  <InfoCircleOutlined style={{ color: "rgba(255,255,255,0.45)" }} />
+                  <InfoCircleOutlined
+                    style={{ color: "rgba(255,255,255,0.45)" }}
+                  />
                 </Tooltip>
               }
             />
           </Form.Item>
         </div>
-        <div className="flex justify-center w-full">
+        <div className="flex w-full justify-center">
           <div>
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
               <div className="flex w-full flex-col items-center justify-center">
                 <div className="flex w-full  flex-col items-center">
-                  <p>Is this product?</p> 
-                  <Image src={imageUrl} alt="Product Image" />
+                  <p>Is this product?</p>
+                  <Image
+                    src={`/api/image?key=${imageUrl}`}
+                    alt="Product Image"
+                  />
                 </div>
                 <div className="flex flex-row items-center">
                   <Button
@@ -136,7 +143,7 @@ function OneGraph() {
                   </Button>
                 </div>
 
-                <div className="flex flex-row items-center">
+                <div className="w-full">
                   {addUnits && (
                     <div className="my-3">
                       <Table
