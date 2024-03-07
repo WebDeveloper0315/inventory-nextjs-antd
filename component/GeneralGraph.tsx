@@ -61,8 +61,8 @@ function GeneralGraph() {
       }
 
       if (response.status === 201) {
-        // console.log("fetchGraphData");
-        // console.log(response.data);
+        console.log("fetchGraphData");
+        console.log(response.data);
 
         setGraphData(response.data);
         setTableData(response.data.tableData);
@@ -152,13 +152,13 @@ function GeneralGraph() {
             </div>
 
             <div>
-              <h2>Bar Graph - Profit Per Code of this month</h2>
-              <BarGraph data={graphData?.profitCode}></BarGraph>
+              <h2>Sale Status Per Code of this month</h2>
+              <BarGraph data={graphData?.sellingCode}></BarGraph>
             </div>
 
             <div>
-              <h2>Bar Graph - Profit Per Market of this month</h2>
-              <BarGraph data={graphData?.profitMarket} />
+              <h2>Sale Status Per Market of this month</h2>
+              <BarGraph data={graphData?.sellingMarket} />
             </div>
 
             {isPdfTableVisible && ( 

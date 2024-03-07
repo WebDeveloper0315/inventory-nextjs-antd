@@ -67,7 +67,7 @@ function Returning() {
     dates: [Dayjs | null, Dayjs | null],
     dateStrings: [string, string]
   ) => {
-    if (dates[0] && dates[1]) {
+    if (dates && dates[0] && dates[1]) {
       // Handle the case when both start and end dates are not null
       const [start, end] = dates;
       setSelectedDateRange([start, end]);

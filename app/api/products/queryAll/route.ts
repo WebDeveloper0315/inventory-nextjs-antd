@@ -6,6 +6,7 @@ import { validateJWT } from "@/helpers/validateJWT";
 connectDB();
 
 function calculateMetrics(graphData: any) {
+  
   const totBuyUnits: any = {};
   const totBuyPrice: any = {};
   const totSellUnits: any = {};
@@ -14,6 +15,8 @@ function calculateMetrics(graphData: any) {
   const totSellTaxes: any = {};
   const totReturnedUnits: any = {};
   const totTrashedUnits: any = {};
+  const totReturnedPrice: any = {};
+  const totTrashedPrice: any = {};
   let marketString: any = {};
   graphData.forEach(
     (item: {
@@ -61,27 +64,22 @@ function calculateMetrics(graphData: any) {
           }
         }
       } else if (mode === "returning") {
-        if (!totSellPrice[productCode]){
-          totSellPrice[productCode] = 0
+        if (!totReturnedPrice[productCode]) {
+          totReturnedPrice[productCode] = 0;
         }
-        if (!totSellUnits[productCode]){
-          totSellUnits[productCode] = 0
-        }
-
-        totSellPrice[productCode] -= pricePerUnit * units;
-        totSellUnits[productCode] -= units;
+        totReturnedPrice[productCode] += pricePerUnit * units;
 
         if (!totReturnedUnits[productCode])
           totReturnedUnits[productCode] = units;
         else totReturnedUnits[productCode] += units;
-      } else if(mode === 'lost') {
-        if (!totSellPrice[productCode]){
-          totSellPrice[productCode] = 0
+      } else if (mode === "lost") {
+        if (!totTrashedPrice[productCode]) {
+          totTrashedPrice[productCode] = 0;
         }
-        totSellPrice[productCode] -= pricePerUnit * units;
+        totTrashedPrice[productCode] += pricePerUnit * units;
 
-        if(!totTrashedUnits[productCode]) totTrashedUnits[productCode] = 0
-        totTrashedUnits[productCode] += units
+        if (!totTrashedUnits[productCode]) totTrashedUnits[productCode] = 0;
+        totTrashedUnits[productCode] += units;
       }
     }
   );
@@ -127,10 +125,12 @@ function calculateMetrics(graphData: any) {
     allTrashedUnits += totTrashedUnits[productCode];
   }
 
-  // console.log(avgSellPrice);
+  // console.log("avgSellPrice ", avgSellPrice);
 
   const profitCode: any = {};
   const profitMarket: any = {};
+  const sellingCode: any = {};
+  const sellingMarket: any = {};
   let allProfit: any = 0;
   graphData.forEach(
     (item: {
@@ -142,49 +142,64 @@ function calculateMetrics(graphData: any) {
       taxes: any;
     }) => {
       const { productCode, mode, pricePerUnit, units, market, taxes } = item;
-      if (mode === "selling") {
+      // console.log("item  ", item);
+      if (profitCode[productCode] === undefined) profitCode[productCode] = 0;
+      // console.log("okay ", profitCode[productCode]);
+      if (market !== undefined && profitMarket[market] === undefined)
+        profitMarket[market] = 0;
+      if (sellingCode[productCode] === undefined) sellingCode[productCode] = 0;
+      if (market !== undefined && sellingMarket[market] === undefined)
+        sellingMarket[market] = 0;
+
+      if (mode === "buying") {
+        profitCode[productCode] -= pricePerUnit * units;
+        allProfit -= pricePerUnit * units;
+      } else if (mode === "selling") {
         if (taxes !== undefined) {
-          const profit =
-            ((1 - taxes / 100) * pricePerUnit -
-              avgBuyPrice[productCode] +
-              avgBuyTaxes[productCode]) *
-            units;
-          if (!profitCode[productCode]) profitCode[productCode] = profit;
-          else profitCode[productCode] += profit;
+          // const profit = ((1 - taxes / 100) * (pricePerUnit - avgBuyPrice[productCode]) + avgBuyTaxes[productCode]) * units;
+          const profit = (1 - taxes / 100) * pricePerUnit * units;
+          profitCode[productCode] += profit;
           allProfit += profit;
 
-          if (market !== undefined) {
-            if (!profitMarket[market]) profitMarket[market] = profit;
-            else profitMarket[market] += profit;
-          }
+          // if (market !== undefined) {
+          //   if (!profitMarket[market]) profitMarket[market] = profit;
+          //   else profitMarket[market] += profit;
+          // }
         }
-      } else if (mode === "returning") {
-        if(!avgBuyPrice[productCode]) avgBuyPrice[productCode] = 0
 
-        const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
-        
-        if (!profitCode[productCode]) profitCode[productCode] = 0
-        
-        profitCode[productCode] -= profit;
-        
-        if (market !== undefined) {
-          profitMarket[market] -= profit;
-        }
-        allProfit -= profit;
-      } else if(mode === 'lost'){
+        sellingCode[productCode] += units;
+        sellingMarket[market] += units;
+        // console.log("sellingCode ", sellingCode[productCode]);
+      } else if (mode === "returning") {
+        // if(!avgBuyPrice[productCode]) avgBuyPrice[productCode] = 0
+
+        // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+
         const profit = pricePerUnit * units;
 
-        if (!profitCode[productCode]) profitCode[productCode] = 0
-        
         profitCode[productCode] -= profit;
-        
-        if (market !== undefined) {
-          profitMarket[market] -= profit;
-        }
+
+        allProfit -= profit;
+
+        // if (market !== undefined) {
+        // profitMarket[market] -= profit;
+
+        // }
+      } else if (mode === "lost") {
+        // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+        const profit = pricePerUnit * units;
+
+        profitCode[productCode] -= profit;
+
+        // if (market !== undefined) {
+        //   profitMarket[market] -= profit;
+        // }
         allProfit -= profit;
       }
     }
   );
+
+  // console.log("In metrics", sellingCode);
 
   return {
     totBuyUnits,
@@ -209,6 +224,8 @@ function calculateMetrics(graphData: any) {
     profitMarket,
     allProfit,
     marketString,
+    sellingCode,
+    sellingMarket,
   };
 }
 
@@ -231,6 +248,9 @@ export async function GET(request: NextRequest) {
     let endOfLoop: number = 0;
     let profitCodeValue: any = {};
     let profitMarketValue: any = {};
+
+    let sellingCodeValue: any = {};
+    let sellingMarketValue: any = {};
 
     if (Vmonth) {
       startOfLoop = 0;
@@ -266,7 +286,7 @@ export async function GET(request: NextRequest) {
       // console.log("queryAll/route.ts  ", graphData);
 
       const metrics = calculateMetrics(graphData);
-      // console.log(metrics);
+      // console.log('metrics   ', metrics);
 
       const sortedTotSellUnits = Object.fromEntries(
         Object.entries(metrics.totSellUnits).sort(
@@ -309,6 +329,7 @@ export async function GET(request: NextRequest) {
           ([, a], [, b]) => (b as any) - (a as any)
         )
       );
+
       // console.log("sorted sell units: ", sortedTotSellUnits);
 
       const monthlyData = {
@@ -424,7 +445,8 @@ export async function GET(request: NextRequest) {
       yearlyData.push(monthlyData);
       profitCodeValue = metrics.profitCode;
       profitMarketValue = metrics.profitMarket;
-
+      sellingCodeValue = metrics.sellingCode;
+      sellingMarketValue = metrics.sellingMarket;
 
       const monthlyDataForPDF = {
         name: `${
@@ -518,9 +540,10 @@ export async function GET(request: NextRequest) {
           },
         ],
       };
-      yearlyDataForPdf.push(monthlyDataForPDF)
+      yearlyDataForPdf.push(monthlyDataForPDF);
     }
     // console.log(yearlyData);
+    // console.log('queryAll/route.ts  ')
 
     return NextResponse.json(
       {
@@ -528,13 +551,15 @@ export async function GET(request: NextRequest) {
         tableDataForPdf: yearlyDataForPdf,
         profitCode: profitCodeValue,
         profitMarket: profitMarketValue,
+        sellingCode: sellingCodeValue,
+        sellingMarket: sellingMarketValue,
       },
       {
         status: 201,
       }
     );
 
-    // console.log('queryAll/route.ts  ',products)
+    
 
     // return NextResponse.json(graphData)
   } catch (error: any) {

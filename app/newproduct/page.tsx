@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 'use client'
 import PageTitle from '@/component/PageTitle'
 import { Button, Col, Row } from 'antd'
