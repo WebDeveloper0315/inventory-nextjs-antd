@@ -17,6 +17,9 @@ function calculateMetrics(graphData: any) {
   const totTrashedUnits: any = {};
   const totReturnedPrice: any = {};
   const totTrashedPrice: any = {};
+  const sellingCode: any = {};
+  const sellingMarket: any = {};
+  const totReturnedTaxes: any = {};
   let marketString: any = {};
   graphData.forEach(
     (item: {
@@ -29,57 +32,56 @@ function calculateMetrics(graphData: any) {
     }) => {
       const { productCode, mode, pricePerUnit, units, market, taxes } = item;
       marketString = market;
+      if (!totBuyPrice[productCode]) totBuyPrice[productCode] = 0;
+      if (!totBuyUnits[productCode]) totBuyUnits[productCode] = 0;
+      if (!totBuyTaxes[productCode]) totBuyTaxes[productCode] = 0;
+      if (!totSellPrice[productCode]) totSellPrice[productCode] = 0;
+      if (!totSellUnits[productCode]) totSellUnits[productCode] = 0;
+      if (!totSellTaxes[productCode]) totSellTaxes[productCode] = 0;
+      if (!totReturnedPrice[productCode]) totReturnedPrice[productCode] = 0;
+      if (!totReturnedUnits[productCode]) totReturnedUnits[productCode] = 0;
+      if (!totTrashedPrice[productCode]) totTrashedPrice[productCode] = 0;
+      if (!totTrashedUnits[productCode]) totTrashedUnits[productCode] = 0;
+
+      if (!totReturnedTaxes[productCode])totReturnedTaxes[productCode] = 0;
+      if (!sellingCode[productCode]) sellingCode[productCode] = 0;
+      if (market !== undefined && !sellingMarket[market]) sellingMarket[market] = 0;
+
       if (mode === "buying") {
-        if (!totBuyPrice[productCode])
-          totBuyPrice[productCode] = pricePerUnit * units;
-        else totBuyPrice[productCode] += pricePerUnit * units;
+        totBuyPrice[productCode] += pricePerUnit * units;
 
-        if (!totBuyUnits[productCode]) totBuyUnits[productCode] = units;
-        else totBuyUnits[productCode] += units;
+        totBuyUnits[productCode] += units;
 
-        if (!totBuyTaxes[productCode]) {
-          if (taxes !== undefined) {
-            totBuyTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
-          }
-        } else {
-          if (taxes !== undefined) {
-            totBuyTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
-          }
+        if (taxes !== undefined) {
+          totBuyTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
         }
       } else if (mode === "selling") {
-        if (!totSellPrice[productCode])
-          totSellPrice[productCode] = pricePerUnit * units;
-        else totSellPrice[productCode] += pricePerUnit * units;
+        totSellPrice[productCode] += pricePerUnit * units;
 
-        if (!totSellUnits[productCode]) totSellUnits[productCode] = units;
-        else totSellUnits[productCode] += units;
+        totSellUnits[productCode] += units;
 
-        if (!totSellTaxes[productCode]) {
-          if (taxes !== undefined) {
-            totSellTaxes[productCode] = (taxes * pricePerUnit * units) / 100;
-          }
-        } else {
-          if (taxes !== undefined) {
-            totSellTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
-          }
+        if (taxes !== undefined) {
+          totSellTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
         }
+
+        sellingCode[productCode] += units;
+        sellingMarket[market] += units;
+
       } else if (mode === "returning") {
-        if (!totReturnedPrice[productCode]) {
-          totReturnedPrice[productCode] = 0;
-        }
+        
         totReturnedPrice[productCode] += pricePerUnit * units;
+        
+        totReturnedUnits[productCode] += units;
 
-        if (!totReturnedUnits[productCode])
-          totReturnedUnits[productCode] = units;
-        else totReturnedUnits[productCode] += units;
+        totReturnedTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
       } else if (mode === "lost") {
-        if (!totTrashedPrice[productCode]) {
-          totTrashedPrice[productCode] = 0;
-        }
+        
         totTrashedPrice[productCode] += pricePerUnit * units;
 
-        if (!totTrashedUnits[productCode]) totTrashedUnits[productCode] = 0;
+        
         totTrashedUnits[productCode] += units;
+
+        totReturnedTaxes[productCode] += (taxes * pricePerUnit * units) / 100;
       }
     }
   );
@@ -129,75 +131,87 @@ function calculateMetrics(graphData: any) {
 
   const profitCode: any = {};
   const profitMarket: any = {};
-  const sellingCode: any = {};
-  const sellingMarket: any = {};
+
   let allProfit: any = 0;
-  graphData.forEach(
-    (item: {
-      productCode: any;
-      mode: any;
-      pricePerUnit: any;
-      units: any;
-      market: any;
-      taxes: any;
-    }) => {
-      const { productCode, mode, pricePerUnit, units, market, taxes } = item;
-      // console.log("item  ", item);
-      if (profitCode[productCode] === undefined) profitCode[productCode] = 0;
-      // console.log("okay ", profitCode[productCode]);
-      if (market !== undefined && profitMarket[market] === undefined)
-        profitMarket[market] = 0;
-      if (sellingCode[productCode] === undefined) sellingCode[productCode] = 0;
-      if (market !== undefined && sellingMarket[market] === undefined)
-        sellingMarket[market] = 0;
+  for (const productCode in totBuyPrice) {
+    if (profitCode[productCode] === undefined) profitCode[productCode] = 0;
+    if (totSellPrice[productCode])
+    {
+      console.log("profitCode[productCode]", profitCode[productCode])
+      profitCode[productCode] = totSellPrice[productCode] - totBuyPrice[productCode] - totSellTaxes[productCode] + totBuyTaxes[productCode] - totReturnedPrice[productCode] - totTrashedPrice[productCode] + totReturnedTaxes[productCode];
 
-      if (mode === "buying") {
-        profitCode[productCode] -= pricePerUnit * units;
-        allProfit -= pricePerUnit * units;
-      } else if (mode === "selling") {
-        if (taxes !== undefined) {
-          // const profit = ((1 - taxes / 100) * (pricePerUnit - avgBuyPrice[productCode]) + avgBuyTaxes[productCode]) * units;
-          const profit = (1 - taxes / 100) * pricePerUnit * units;
-          profitCode[productCode] += profit;
-          allProfit += profit;
+      allProfit += profitCode[productCode];
 
-          // if (market !== undefined) {
-          //   if (!profitMarket[market]) profitMarket[market] = profit;
-          //   else profitMarket[market] += profit;
-          // }
-        }
-
-        sellingCode[productCode] += units;
-        sellingMarket[market] += units;
-        // console.log("sellingCode ", sellingCode[productCode]);
-      } else if (mode === "returning") {
-        // if(!avgBuyPrice[productCode]) avgBuyPrice[productCode] = 0
-
-        // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
-
-        const profit = pricePerUnit * units;
-
-        profitCode[productCode] -= profit;
-
-        allProfit -= profit;
-
-        // if (market !== undefined) {
-        // profitMarket[market] -= profit;
-
-        // }
-      } else if (mode === "lost") {
-        // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
-        const profit = pricePerUnit * units;
-
-        profitCode[productCode] -= profit;
-
-        // if (market !== undefined) {
-        //   profitMarket[market] -= profit;
-        // }
-        allProfit -= profit;
-      }
+      console.log("profitCode[productCode]", profitCode[productCode])
     }
-  );
+    
+  }
+  // graphData.forEach(
+  //   (item: {
+  //     productCode: any;
+  //     mode: any;
+  //     pricePerUnit: any;
+  //     units: any;
+  //     market: any;
+  //     taxes: any;
+  //   }) => {
+  //     const { productCode, mode, pricePerUnit, units, market, taxes } = item;
+  //     // console.log("item  ", item);
+  //     if (profitCode[productCode] === undefined) profitCode[productCode] = 0;
+  //     // console.log("okay ", profitCode[productCode]);
+  //     if (market !== undefined && profitMarket[market] === undefined)
+  //       profitMarket[market] = 0;
+  //     if (sellingCode[productCode] === undefined) sellingCode[productCode] = 0;
+  //     if (market !== undefined && sellingMarket[market] === undefined)
+  //       sellingMarket[market] = 0;
+
+  //     if (mode === "buying") {
+  //       profitCode[productCode] -= ((pricePerUnit - avgBuyTaxes[productCode]) * units ) ;
+  //       allProfit -= pricePerUnit * units;
+  //     } else if (mode === "selling") {
+  //       if (taxes !== undefined) {
+  //         // const profit = ((1 - taxes / 100) * (pricePerUnit - avgBuyPrice[productCode]) + avgBuyTaxes[productCode]) * units;
+  //         const profit = (1 - taxes / 100) * pricePerUnit * units;
+  //         profitCode[productCode] += profit;
+  //         allProfit += profit;
+
+  //         // if (market !== undefined) {
+  //         //   if (!profitMarket[market]) profitMarket[market] = profit;
+  //         //   else profitMarket[market] += profit;
+  //         // }
+  //       }
+
+  //       sellingCode[productCode] += units;
+  //       sellingMarket[market] += units;
+  //       // console.log("sellingCode ", sellingCode[productCode]);
+  //     } else if (mode === "returning") {
+  //       // if(!avgBuyPrice[productCode]) avgBuyPrice[productCode] = 0
+
+  //       // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+
+  //       const profit = pricePerUnit * units;
+
+  //       profitCode[productCode] -= profit;
+
+  //       allProfit -= profit;
+
+  //       // if (market !== undefined) {
+  //       // profitMarket[market] -= profit;
+
+  //       // }
+  //     } else if (mode === "lost") {
+  //       // const profit = (pricePerUnit - avgBuyPrice[productCode]) * units;
+  //       const profit = pricePerUnit * units;
+
+  //       profitCode[productCode] -= profit;
+
+  //       // if (market !== undefined) {
+  //       //   profitMarket[market] -= profit;
+  //       // }
+  //       allProfit -= profit;
+  //     }
+  //   }
+  // );
 
   // console.log("In metrics", sellingCode);
 

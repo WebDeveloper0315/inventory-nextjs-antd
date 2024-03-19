@@ -66,8 +66,8 @@ function OneGraph() {
           { label: "Product Profit", value: response.data.profitProduct },
           { label: "Sale Profit", value: response.data.profitSale },
           {
-            label: "Average Money in tax",
-            value: response.data.averageMoneyInTax,
+            label: "Total Money in tax",
+            value: response.data.totalMoneyInTax,
           },
         ]);
         // message.success(response.data.message);

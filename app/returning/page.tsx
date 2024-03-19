@@ -104,6 +104,7 @@ function Returning() {
         pricePerUnit: selectedRow.pricePerUnit,
         market: selectedRow.market,
         location: selectedRow.location,
+        taxes: selectedRow.taxes,
         // Add more fields as needed
       });
     }
@@ -441,6 +442,15 @@ function Returning() {
                             }
                             className="my-3"
                           > */}
+
+                          <Form.Item
+                            label="Taxes(%)"
+                            name="taxes"
+                            className=" my-3 w-auto"
+                            hidden
+                          >
+                            <Input placeholder="Taxes" />
+                          </Form.Item>
                         <Button
                           type="primary"
                           onClick={showPopconfirm}

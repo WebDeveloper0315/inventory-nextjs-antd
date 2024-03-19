@@ -35,12 +35,13 @@ export async function POST(request: NextRequest) {
 
     let modeString = "";
     let tax = 0;
+    tax = reqBody.taxes;
     if (buying) {
       modeString = "buying";
-      tax = reqBody.taxes;
+      // tax = reqBody.taxes;
     } else if (selling) {
       modeString = "selling";
-      tax = reqBody.taxes;
+      // tax = reqBody.taxes;
     } else if (returning === 'store') {
       modeString = "returning";
     } else if (returning === 'bin') {

@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
     let totalReturnPrice = 0;
     let totalTrashedUnits = 0;
     let totalTrashedPrice = 0;
+    let totalReturnedTaxes = 0;
 
     products.forEach((product: any) => {
       if (product.mode === "buying") {
@@ -43,9 +44,11 @@ export async function GET(request: NextRequest) {
       } else if ( product.mode === "returning") {
         totalReturnUnits += product.units;
         totalReturnPrice += product.pricePerUnit * product.units;
+        totalReturnedTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
       } else if ( product.mode === "lost") {
         totalTrashedUnits += product.units;
         totalTrashedPrice += product.pricePerUnit * product.units;
+        totalReturnedTaxes += (product.pricePerUnit * product.units * product.taxes) / 100;
       }
     });
 
@@ -63,9 +66,9 @@ export async function GET(request: NextRequest) {
         unitsTrashed: totalTrashedUnits,
         averageBuyPrice: avgBuyPrice,
         averageSellPrice: avgSellPrice,
-        profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes - totalReturnPrice - totalTrashedPrice,
-        profitSale: (totalSellUnits - totalReturnUnits - totalTrashedUnits) * (avgSellPrice - avgBuyPrice) - totalSellTaxes + totalSellUnits * avgBuyTaxes,
-        averageMoneyInTax: totalSellTaxes / totalSellUnits,
+        profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes - totalReturnPrice - totalTrashedPrice + totalReturnedTaxes,
+        profitSale: (totalSellUnits - totalReturnUnits - totalTrashedUnits) * (avgSellPrice - avgBuyPrice) - totalSellTaxes + (totalSellUnits - totalReturnUnits) * avgBuyTaxes + totalReturnedTaxes - totalTrashedUnits * avgBuyPrice,
+        totalMoneyInTax: totalBuyTaxes - totalSellTaxes + totalReturnedTaxes,
         
       },
       {
