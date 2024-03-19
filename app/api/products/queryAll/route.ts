@@ -137,12 +137,12 @@ function calculateMetrics(graphData: any) {
     if (profitCode[productCode] === undefined) profitCode[productCode] = 0;
     if (totSellPrice[productCode])
     {
-      console.log("profitCode[productCode]", profitCode[productCode])
+      // console.log("profitCode[productCode]", profitCode[productCode])
       profitCode[productCode] = totSellPrice[productCode] - totBuyPrice[productCode] - totSellTaxes[productCode] + totBuyTaxes[productCode] - totReturnedPrice[productCode] - totTrashedPrice[productCode] + totReturnedTaxes[productCode];
 
       allProfit += profitCode[productCode];
 
-      console.log("profitCode[productCode]", profitCode[productCode])
+      // console.log("profitCode[productCode]", profitCode[productCode])
     }
     
   }
