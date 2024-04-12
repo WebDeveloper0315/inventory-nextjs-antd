@@ -1,14 +1,30 @@
-import { Button, Form, Image, Input, Table, Tooltip, message } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Table,
+  TableColumnsType,
+  Tooltip,
+  message,
+} from "antd";
 import React, { useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "@/redux/loadersSlice";
 import axios from "axios";
 
+interface DataType {
+  key: React.ReactNode;
+  field: string;
+  value: number;
+  children?: DataType[];
+}
+
 function OneGraph() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState("");
-  const [tableData, setTableData] = useState<any[]>([]);
+  const [tableData, setTableData] = useState<DataType[]>([]);
   const [queryCode, setQueryCode] = useState("");
 
   const handleSubmit = async (code: string) => {
@@ -53,20 +69,44 @@ function OneGraph() {
       );
       // console.log(response);
       if (response.status === 201) {
+        const childrenData = response.data.stockData.map((stock: any, index: number) => ({
+          key: index + 11,
+          field: stock.location,
+          value: stock.stocks,
+        }));
         setTableData([
-          { label: "Units Remaining", value: response.data.unitsRemaining },
-          { label: "Units Sold", value: response.data.unitsSold },
-          { label: "Units Returned", value: response.data.unitsReturned},
-          { label: "Units Trashed", value: response.data.unitsTrashed},
-          { label: "Average Buy Price", value: response.data.averageBuyPrice },
           {
-            label: "Average Sell Price",
+            key: 1,
+            field: "Units Remaining",
+            value: response.data.unitsRemaining,
+            children: childrenData,
+          },
+          { key: 2, field: "Units Sold", value: response.data.unitsSold },
+          {
+            key: 3,
+            field: "Units Returned",
+            value: response.data.unitsReturned,
+          },
+          { key: 4, field: "Units Trashed", value: response.data.unitsTrashed },
+          {
+            key: 5,
+            field: "Average Buy Price",
+            value: response.data.averageBuyPrice,
+          },
+          {
+            key: 6,
+            field: "Average Sell Price",
             value: response.data.averageSellPrice,
           },
-          { label: "Product Profit", value: response.data.profitProduct },
-          { label: "Sale Profit", value: response.data.profitSale },
           {
-            label: "Total Money in tax",
+            key: 7,
+            field: "Product Profit",
+            value: response.data.profitProduct,
+          },
+          { key: 8, field: "Sale Profit", value: response.data.profitSale },
+          {
+            key: 9,
+            field: "Total Money in tax",
             value: response.data.totalMoneyInTax,
           },
         ]);
@@ -83,10 +123,10 @@ function OneGraph() {
     }
   };
 
-  const columns = [
+  const columns: TableColumnsType<DataType> = [
     {
       title: "Field",
-      dataIndex: "label",
+      dataIndex: "field",
       key: "field",
     },
     {

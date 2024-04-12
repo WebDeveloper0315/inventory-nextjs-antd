@@ -2,6 +2,7 @@ import { connectDB } from "@/config/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Recording from "@/models/recordingModel";
 import { validateJWT } from "@/helpers/validateJWT";
+import Stock from "@/models/stockModel";
 
 connectDB();
 
@@ -56,6 +57,17 @@ export async function GET(request: NextRequest) {
     const avgSellPrice = totalSellPrice / totalSellUnits;
     const avgBuyTaxes = totalBuyTaxes / totalBuyUnits;
 
+    const allData = await Stock.find({ productCode });
+      // console.log(allData);
+
+      const stockData = allData.map((oneData) => {
+        return {
+          location: oneData.location,
+          pricePerUnit: oneData.pricePerUnit,
+          stocks: oneData.stocks,
+        };
+      });
+
     // console.log("Average Buy Price:", avgBuyPrice);
     // console.log("Average Sell Price:", avgSellPrice);
     return NextResponse.json(
@@ -69,7 +81,7 @@ export async function GET(request: NextRequest) {
         profitProduct: totalSellPrice - totalBuyPrice - totalSellTaxes + totalBuyTaxes - totalReturnPrice - totalTrashedPrice + totalReturnedTaxes,
         profitSale: (totalSellUnits - totalReturnUnits - totalTrashedUnits) * (avgSellPrice - avgBuyPrice) - totalSellTaxes + (totalSellUnits - totalReturnUnits) * avgBuyTaxes + totalReturnedTaxes - totalTrashedUnits * avgBuyPrice,
         totalMoneyInTax: totalBuyTaxes - totalSellTaxes + totalReturnedTaxes,
-        
+        stockData,
       },
       {
         status: 201,

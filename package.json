@@ -1,6 +1,6 @@
 {
   "name": "inventory-nextjs-antd",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.1",
     "mongoose": "^7.6.2",
-    "next": "^14.0.3",
+    "next": "^14.2.0",
     "next-cookie": "^2.8.0",
     "next-cookies": "^2.0.3",
     "nookies": "^2.5.2",
