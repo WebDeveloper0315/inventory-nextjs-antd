@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       
       const start = reqBody.start; // Access the start date from the JSON data
       const end = reqBody.end; // Access the end date from the JSON data
+      // console.log("end", end)
   
       const recordingQuery = await Recording.find({productCode, mode: "selling", createdAt: { $gte: start, $lte: end } })
   
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
           market: oneData.market,
           taxes: oneData.taxes,
           location: oneData.location,
-          createdAt: oneData.createdAt,
+          createdAt: oneData.createdTime,
         }
       })
   

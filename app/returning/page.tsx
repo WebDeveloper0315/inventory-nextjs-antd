@@ -56,7 +56,7 @@ function Returning() {
 
   const [selectedDateRange, setSelectedDateRange] = useState<[Dayjs, Dayjs]>([
     dayjs().subtract(1, "month"),
-    dayjs(),
+    dayjs().add(1, "day"),
   ]);
 
   const showPopconfirm = () => {
@@ -70,7 +70,10 @@ function Returning() {
     if (dates && dates[0] && dates[1]) {
       // Handle the case when both start and end dates are not null
       const [start, end] = dates;
-      setSelectedDateRange([start, end]);
+      const oneDayLater = end.add(1, 'day');
+      console.log(end, oneDayLater);
+      setSelectedDateRange([start, oneDayLater]);
+      
       await getSellingHistory({
         start: start.format("YYYY-MM-DD"),
         end: end.format("YYYY-MM-DD"),
@@ -186,16 +189,6 @@ function Returning() {
   const onShowUnits = async () => {
     try {
       dispatch(SetLoading(true));
-      // const response = await axios.get("api/locations");
-      // // console.log(response.data.locations);
-      // const locationsArray = response.data?.locations;
-
-      // const formattedLocations = locationsArray.map(
-      //   (location: { location: any }) => {
-      //     return location.location;
-      //   }
-      // );
-      // setLocations(formattedLocations);
 
       const [startDate, endDate] = selectedDateRange;
 
@@ -277,7 +270,7 @@ function Returning() {
       render: (createdAt: Date) => (
         <span>
           {new Date(createdAt)
-            .toISOString()
+            .toLocaleString()
             .replace(/T/, " ")
             .replace(/\..+/, "")}
         </span>

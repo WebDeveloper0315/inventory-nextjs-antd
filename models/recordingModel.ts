@@ -30,6 +30,10 @@ const recordingSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    createdTime: {
+      type: String,
+      
+    }
   },
   {
     timestamps: true,

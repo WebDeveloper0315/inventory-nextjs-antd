@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     await validateJWT(request);
 
+    
     const { searchParams } = new URL(request.url);
     // console.log('search parameter', searchParams)
     const buying = searchParams.get("buying");
@@ -94,9 +95,12 @@ export async function POST(request: NextRequest) {
       market: reqBody.market,
       location: locationInfo,
       taxes: tax,
+      createdTime: new Date().toLocaleString(),
     });
 
     await newRecording.save();
+    
+    
 
     const locationQuery = await Location.findOne({location: locationInfo});
     

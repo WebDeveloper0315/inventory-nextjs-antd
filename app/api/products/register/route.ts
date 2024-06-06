@@ -10,6 +10,7 @@ connectDB();
 
 export async function POST(request: NextRequest) {
   try {
+    
     const reqBody = await request.json();
     // console.log(reqBody)
     // check if user already exists
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
       market: reqBody.market,
       taxes: reqBody.taxes,
       location: reqBody.location,
+      createdTime: new Date().toLocaleString(),
     });
 
     await newRecording.save();
