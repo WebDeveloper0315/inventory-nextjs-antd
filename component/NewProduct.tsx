@@ -70,7 +70,7 @@ function NewProductRegister() {
           <Form.Item
             label="Product Code"
             name="code"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="#A0005" />
           </Form.Item>
@@ -79,7 +79,7 @@ function NewProductRegister() {
           <Form.Item
             label="Product Image"
             name="image"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Dragger
               accept=".png,.jpg,.jpeg"
@@ -117,7 +117,7 @@ function NewProductRegister() {
           <Form.Item
             label="Units to Buying"
             name="units"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="Input the units to buy" />
           </Form.Item>
@@ -127,7 +127,7 @@ function NewProductRegister() {
           <Form.Item
             label="Price Per Unit"
             name="pricePerUnit"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="Input the price per unit" />
           </Form.Item>
@@ -137,7 +137,7 @@ function NewProductRegister() {
           <Form.Item
             label="Market Place"
             name="market"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="Market where you bought" />
           </Form.Item>
@@ -147,7 +147,7 @@ function NewProductRegister() {
           <Form.Item
             label="Tax(%)"
             name="taxes"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="Tax(%)" />
           </Form.Item>
@@ -157,7 +157,7 @@ function NewProductRegister() {
           <Form.Item
             label="Location"
             name="location"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input placeholder="location where you want to store" />
           </Form.Item>
@@ -165,7 +165,7 @@ function NewProductRegister() {
 
         <div className="flex justify-center">
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="my-3" block>
+            <Button type="primary" htmlType="submit" className="my-3" block style={{ width: '150px'}}>
               Upload
             </Button>
           </Form.Item>

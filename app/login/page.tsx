@@ -34,7 +34,7 @@ export default function Login() {
     <>
       <div className="h-screen bg-gray-900">
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="text-center sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="text-center lg:mx-auto lg:w-full lg:max-w-sm">
             <Image
               className="mx-auto h-28 w-full"
               src={{
@@ -49,7 +49,7 @@ export default function Login() {
             </h2>
           </div>
 
-          <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="mt-5 lg:mx-auto lg:w-full lg:max-w-sm">
             <Form layout="vertical" className="space-y-6" onFinish={onFinish}>
               <Form.Item label="Name" name="name">
                 <Input

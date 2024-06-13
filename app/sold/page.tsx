@@ -90,24 +90,26 @@ function Sold() {
             <Form.Item
               label="Product Code"
               name="code"
-              className="w-full sm:w-1/2 "
+              className="w-full lg:w-1/2 "
             >
               <Input
                 placeholder="#A0005"
                 onPressEnter={handleEnterPress}
                 suffix={
                   <Tooltip title="Press Enter Key after entering...">
-                    <InfoCircleOutlined style={{ color: "rgba(255,255,255,0.45)" }} />
+                    <InfoCircleOutlined
+                      style={{ color: "rgba(255,255,255,0.45)" }}
+                    />
                   </Tooltip>
                 }
               />
             </Form.Item>
           </div>
           <div className="flex justify-center ">
-            {/* <div className="sm:w-1/2 md:w-1/3 lg:w-1/4"> */}
+            {/* <div className="lg:w-1/2 md:w-1/3 lg:w-1/4"> */}
             {imageUrl && (
-              <div className="flex flex-col items-center">
-                <div className="flex  w-full flex-col items-center sm:w-1/2">
+              <div className="flex flex-col items-center w-full lg:w-1/2">
+                <div className="flex flex-col items-center ">
                   <p>Is this product?</p>
                   <Image
                     src={`/api/image?key=${imageUrl}`}
@@ -118,21 +120,21 @@ function Sold() {
                 <div className="flex flex-row items-center">
                   <Button
                     type="primary"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onShowUnits}
                   >
                     Yes
                   </Button>
                   <Button
                     type="default"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onHideUnits}
                   >
                     No
                   </Button>
                 </div>
 
-                <div className=" w-auto">
+                <div className="w-full">
                   {addUnits && (
                     <div>
                       <Form.Item

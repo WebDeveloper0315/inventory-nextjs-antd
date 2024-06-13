@@ -85,7 +85,7 @@ function NewUnits() {
           <Form.Item
             label="Product Code"
             name="code"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input
               placeholder="#A0005"
@@ -99,7 +99,7 @@ function NewUnits() {
           </Form.Item>
         </div>
         <div className="flex justify-center ">
-          <div className="w-full sm:w-1/2">
+          <div className="w-full lg:w-1/2">
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
               <div className="flex flex-col items-center">
@@ -116,14 +116,14 @@ function NewUnits() {
                 <div className="flex flex-row items-center">
                   <Button
                     type="primary"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onShowUnits}
                   >
                     Yes
                   </Button>
                   <Button
                     type="default"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onHideUnits}
                   >
                     No

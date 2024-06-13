@@ -6,6 +6,9 @@ import OneGraph from "@/component/OneGraph";
 import PageTitle from "@/component/PageTitle";
 import { Button } from "antd";
 import React, { useState } from "react";
+import { BiMap } from "react-icons/bi"; 
+import { AiOutlineLineChart , AiOutlineBarChart } from "react-icons/ai"; 
+ 
 
 function Query() {
   const [showGeneral, setShowGeneral] = useState(false);
@@ -34,14 +37,14 @@ function Query() {
     <div className="my-3">
       <PageTitle title="Query" />
       <div className="flex flex-col items-center">
-        <div className="flex w-full justify-center sm:w-1/2">
+        <div className="flex w-full justify-center lg:w-1/2">
           <Button
             type="primary"
             block
             onClick={handleOneButtonClick}
             className="mx-3"
           >
-            <i className="ri-bar-chart-2-fill">&nbsp;One Product</i>
+            <b className='text-2xl'><AiOutlineBarChart />&nbsp;One Product</b>
           </Button>
           <Button
             type="primary"
@@ -49,7 +52,7 @@ function Query() {
             onClick={handleGeneralButtonClick}
             className="mx-3"
           >
-            <i className="ri-line-chart-line">&nbsp;General</i>
+            <b className='text-2xl'><AiOutlineLineChart />&nbsp;General</b>
           </Button>
           <Button
             type="primary"
@@ -57,11 +60,11 @@ function Query() {
             onClick={handleLocationButtonClick}
             className="mx-3"
           >
-            <i className="ri-map-pin-line">&nbsp;Location</i>
+            <b className='text-2xl'><BiMap />&nbsp;Location</b>
           </Button>
         </div>
 
-        <div className="mt-6 flex w-full justify-center sm:w-1/2">
+        <div className="mt-6 flex w-full justify-center lg:w-1/2">
           {showOne && <OneGraph />}
           {showGeneral && <GeneralGraph />}
           {showLocation && <LocationGraph />}

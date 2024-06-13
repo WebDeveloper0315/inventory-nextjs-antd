@@ -10,6 +10,8 @@ import Chart, { CategoryScale } from "chart.js/auto";
 import BarGraph from "./BarGraph";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { BsFillBarChartFill , BsFillPieChartFill } from "react-icons/bs"; 
+ 
 
 interface DataType {
   key: React.ReactNode;
@@ -123,7 +125,7 @@ function GeneralGraph() {
           onClick={() => handleQueryButtonClick("month")}
           className="mx-3"
         >
-          <i className="ri-bar-chart-2-fill">&nbsp;Monthly</i>
+          <b className='text-2xl'><BsFillBarChartFill />&nbsp;Monthly</b>
         </Button>
 
         <Button
@@ -132,7 +134,7 @@ function GeneralGraph() {
           onClick={() => handleQueryButtonClick("year")}
           className="mx-3"
         >
-          <i className="ri-bar-chart-2-fill">&nbsp;Yearly</i>
+          <b className='text-2xl'><BsFillPieChartFill />&nbsp;Yearly</b>
         </Button>
       </div>
       <div>

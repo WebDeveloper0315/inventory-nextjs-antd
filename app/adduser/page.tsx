@@ -39,7 +39,7 @@ function AddUser() {
           <Form.Item
             label="Name"
             name="name"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Input
               placeholder="Enter your username"
@@ -55,7 +55,7 @@ function AddUser() {
           <Form.Item
             label="Password"
             name="password"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
             rules={[
               { required: true, message: "Please input your password!" },
               // Add any other password validations here
@@ -71,7 +71,7 @@ function AddUser() {
           <Form.Item
             label="Confirm Password"
             name="confirmPassword"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
             dependencies={["password"]}
             rules={[
               { required: true, message: "Please confirm your password!" },
@@ -95,7 +95,7 @@ function AddUser() {
           <Form.Item
             label="Select the user's authority"
             name="userAuthority"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             <Checkbox.Group
               style={{ width: "100%", display: "grid" }}
@@ -114,7 +114,7 @@ function AddUser() {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full sm:w-1/2"
+            className="w-full lg:w-1/2"
           >
             Create
           </Button>

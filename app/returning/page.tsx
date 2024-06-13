@@ -312,7 +312,7 @@ function Returning() {
             <Form.Item
               label="Product Code"
               name="code"
-              className="w-full sm:w-1/2"
+              className="w-full lg:w-1/2"
             >
               <Input
                 placeholder="#A0005"
@@ -326,11 +326,11 @@ function Returning() {
             </Form.Item>
           </div>
           <div className="flex justify-center ">
-            {/* <div className="sm:w-1/2 md:w-1/3 lg:w-1/4"> */}
+            {/* <div className="lg:w-1/2 md:w-1/3 lg:w-1/4"> */}
             {/* {imageUrl && <BuyingUnits imageUrl={imageUrl} onHide={onHideBuyingUnits} />} */}
             {imageUrl && (
               <div className="flex flex-col items-center">
-                <div className="flex w-full flex-col items-center sm:w-1/2">
+                <div className="flex w-full flex-col items-center lg:w-1/2">
                   <p>Is this product?</p>
                   <Image
                     src={`/api/image?key=${imageUrl}`}
@@ -342,14 +342,14 @@ function Returning() {
                 <div className="flex flex-row items-center">
                   <Button
                     type="primary"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onShowUnits}
                   >
                     Yes
                   </Button>
                   <Button
                     type="default"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onHideUnits}
                   >
                     No

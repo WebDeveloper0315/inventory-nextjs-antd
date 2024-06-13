@@ -8,6 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { SetCurrentUser } from "@/redux/usersSlice";
 import Loader from "./Loader";
 import { SetLoading } from "@/redux/loadersSlice";
+import { CgAdd } from "react-icons/cg"; 
+import { MdSell } from "react-icons/md"; 
+import { RiRefund2Fill } from "react-icons/ri"; 
+import { FaSellsy } from "react-icons/fa"; 
+import { AiOutlineUserAdd , AiFillCloseCircle } from "react-icons/ai"; 
+import { GiHamburgerMenu } from "react-icons/gi"; 
+import { FiLogOut } from "react-icons/fi"; 
+ 
 
 function AntdProvider({ children }: { children: React.ReactNode }) {
   const { currentUser } = useSelector((state: any) => state.users);
@@ -19,27 +27,27 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
     {
       name: " ",
       path: " ",
-      icon: " ",
+      icon: " " as React.ReactNode,
     },
     {
       name: " ",
       path: " ",
-      icon: " ",
+      icon: " " as React.ReactNode,
     },
     {
       name: " ",
       path: " ",
-      icon: " ",
+      icon: " " as React.ReactNode,
     },
     {
       name: " ",
       path: " ",
-      icon: " ",
+      icon: " " as React.ReactNode,
     },
     {
       name: " ",
       path: " ",
-      icon: " ",
+      icon: " " as React.ReactNode,
     },
   ]);
 
@@ -64,7 +72,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
         const tempMenuItems = menuItems;
         tempMenuItems[pos].name = "New Product";
         tempMenuItems[pos].path = "/newproduct";
-        tempMenuItems[pos].icon = "ri-add-circle-line";
+        tempMenuItems[pos].icon = <CgAdd />;
         setMenuItems(tempMenuItems);
         pos = pos + 1;
       }
@@ -73,7 +81,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
         const tempMenuItems = menuItems;
         tempMenuItems[pos].name = "Sold";
         tempMenuItems[pos].path = "/sold";
-        tempMenuItems[pos].icon = "ri-check-double-line";
+        tempMenuItems[pos].icon = <MdSell />;
         setMenuItems(tempMenuItems);
         pos = pos + 1;
       }
@@ -82,7 +90,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
         const tempMenuItems = menuItems;
         tempMenuItems[pos].name = "Item Return";
         tempMenuItems[pos].path = "/returning";
-        tempMenuItems[pos].icon = "ri-refund-2-line";
+        tempMenuItems[pos].icon = <RiRefund2Fill />;
         setMenuItems(tempMenuItems);
         pos = pos + 1;
       }
@@ -91,7 +99,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
         const tempMenuItems = menuItems;
         tempMenuItems[pos].name = "Query";
         tempMenuItems[pos].path = "/query";
-        tempMenuItems[pos].icon = "ri-questionnaire-line";
+        tempMenuItems[pos].icon = <FaSellsy />;
         setMenuItems(tempMenuItems);
         pos = pos + 1;
       }
@@ -99,7 +107,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
         const tempMenuItems = menuItems;
         tempMenuItems[pos].name = "Add User";
         tempMenuItems[pos].path = "/adduser";
-        tempMenuItems[pos].icon = "ri-user-add-line";
+        tempMenuItems[pos].icon = <AiOutlineUserAdd />;
         setMenuItems(tempMenuItems);
         pos = pos + 1;
       }
@@ -184,15 +192,13 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                 {isSidebarExpanded && <h1>Side Panel</h1>}
                 {!isSidebarExpanded && (
                   <i
-                    className="ri-menu-2-line"
                     onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-                  ></i>
+                  ><GiHamburgerMenu /></i>
                 )}
                 {isSidebarExpanded && (
                   <i
-                    className="ri-close-line"
                     onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-                  ></i>
+                  ><AiFillCloseCircle /></i>
                 )}
               </div>
 
@@ -212,7 +218,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                       key={index}
                       onClick={() => router.push(item.path)}
                     >
-                      <i className={item.icon}></i>
+                      {item.icon}
                       <span>{isSidebarExpanded && item.name}</span>
                     </div>
                   );
@@ -225,7 +231,7 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
                     <span>{currentUser?.name}</span>
                   </div>
                 )}
-                <i className="ri-logout-box-r-line" onClick={onLogout}></i>
+                <i onClick={onLogout}><FiLogOut /></i>
               </div>
             </div>
             <div className="body">{children}</div>

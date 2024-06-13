@@ -5,6 +5,8 @@ import { Button, Col, Row } from 'antd'
 import React, { useState } from 'react'
 import NewProductRegister from '@/component/NewProduct'
 import BuyingUnits from '@/component/BuyingUnits'
+import { BiCartAdd } from "react-icons/bi"; 
+import { FaCashRegister } from "react-icons/fa"; 
 
 function NewProduct() {
   const [showRegister, setShowRegister] = useState(false);
@@ -31,14 +33,14 @@ function NewProduct() {
           <Col span={8}>
             
               <Button type='primary' block onClick={handleUnitsButtonClick}>
-                <i className="ri-add-line">&nbsp;Buying</i>
+                <b className='text-2xl'><BiCartAdd />&nbsp;Buying</b>
               </Button>  
                
           </Col>
           <Col span={8}>
             
               <Button type='primary' block onClick={handleNewButtonClick}>
-                <i className="ri-file-list-3-line">&nbsp;Register</i>
+                <b className='text-2xl'><FaCashRegister />&nbsp;Register</b>
               </Button>  
             
           </Col>

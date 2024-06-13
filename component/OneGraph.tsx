@@ -169,14 +169,14 @@ function OneGraph() {
                 <div className="flex flex-row items-center">
                   <Button
                     type="primary"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onFinish}
                   >
                     Yes
                   </Button>
                   <Button
                     type="default"
-                    style={{ margin: "10px" }}
+                    style={{ margin: "10px", width: "150px" }}
                     onClick={onHideUnits}
                   >
                     No
