@@ -2,6 +2,8 @@
 
 This website was built with [Next.js 14.2.0](https://nextjs.org/) and [Ant Design](https://ant.design/).
 This project uses [App router](https://nextjs.org/docs).
+This Project runs only in local mode for now, because it uses local mongodb.
+So if you want run in online mode, you have to change MONGO_URI in the config.ts.
 
 ## :arrow_forward: Local Setup
 
@@ -27,6 +29,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## ▶️ Running directly the deployed page
 
 You can check the page from https://inventory-nextjs-antd.vercel.app/
+(You have to change the config.ts file to run in online mode.)
 ## :handshake: License
 
 ```
