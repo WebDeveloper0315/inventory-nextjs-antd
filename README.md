@@ -1,7 +1,7 @@
 # Inventory Management using Next.js
 
-This website was built with [Next.js 14.2.0](https://nextjs.org/) and [Ant Design](https://ant.design/).
-This project uses [App router](https://nextjs.org/docs).
+This website was built with [Next.js 14.2.0](https://nextjs.org/) and [Ant Design](https://ant.design/).<br/>
+This project uses [App router](https://nextjs.org/docs).<br/>
 This Project runs only in local mode for now, because it uses local mongodb.
 So if you want run in online mode, you have to change MONGO_URI in the config.ts.
 
