@@ -1,6 +1,6 @@
 # Inventory Management using Next.js
 
-This website was built with [Next.js 14.0.3](https://nextjs.org/) and [Ant Design](https://ant.design/).
+This website was built with [Next.js 14.2.0](https://nextjs.org/) and [Ant Design](https://ant.design/).
 This project uses [App router](https://nextjs.org/docs).
 
 ## :arrow_forward: Local Setup
