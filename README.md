@@ -5,7 +5,7 @@ This project uses [App router](https://nextjs.org/docs).<br/>
 This Project runs only in local mode for now, because it uses local mongodb.<br/>
 So if you want run in online mode, you have to change MONGO_URI in the config.ts.
 
-## :arrow_forward: Local Setup
+## :arrow_forward: Local Setup (Developer Mode)
 
 First, clone this repository:
 
@@ -25,6 +25,17 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## :arrow_forward: Local Setup (Running Mode)
+After clone this repository, just run the building.cmd in terminal
+```bash
+.\building.cmd
+```
+After finished building, run the "running.cmd" in terminal
+```bash
+.\running.cmd
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. It will very fast because the project is builded.
 
 ## ▶️ Running directly the deployed page
 
