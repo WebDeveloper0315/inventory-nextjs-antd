@@ -30,10 +30,20 @@ const numericLike = z
   });
 
 // Treat "", null and undefined as "not provided" for optional numerics.
-const optionalNumeric = z.preprocess(
-  (v) => (v === "" || v === null || v === undefined ? undefined : v),
-  numericLike.optional()
-);
+//
+// Deliberately NOT z.preprocess(): that widens the inferred output type to
+// `unknown`, which then fails to type-check at every call site that feeds the
+// value into toDecimal128(). This keeps the output as `string | number |
+// undefined`.
+const optionalNumeric = z
+  .union([z.string(), z.number(), z.null()])
+  .optional()
+  .transform((v): string | number | undefined =>
+    v === "" || v === null || v === undefined ? undefined : v
+  )
+  .refine((v) => v === undefined || Number.isFinite(Number(v)), {
+    message: "must be a number",
+  });
 
 export const loginSchema = z.object({
   name: z.string().min(1, "name is required"),

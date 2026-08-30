@@ -28,17 +28,29 @@ beforeEach(async () => {
   if (hasDb) await clearCollections();
 });
 
-/** Skip every test in this file when no database is available. */
-const itDb = (...args: Parameters<typeof it>) => {
-  const [name, fn, timeout] = args;
-  return it(name, async (ctx) => {
-    if (!hasDb) {
-      ctx.skip();
-      return;
-    }
-    return (fn as any)(ctx);
-  }, timeout);
-};
+/**
+ * Declares a test that skips when no database is available.
+ *
+ * Written with an explicit signature rather than `Parameters<typeof it>`:
+ * vitest's `it` is overloaded, and that helper resolved to the
+ * `(name, options, fn)` overload, which typed the callback as `TestOptions`.
+ */
+function itDb(name: string, fn: () => Promise<void>, timeout = 30_000) {
+  // `ctx` is intentionally not annotated: in vitest 2 `TestContext` is an empty
+  // augmentation interface and `skip()` lives on `TaskContext`, so inference
+  // from this overload gives the correct combined type.
+  return it(
+    name,
+    async (ctx) => {
+      if (!hasDb) {
+        ctx.skip();
+        return;
+      }
+      await fn();
+    },
+    timeout
+  );
+}
 
 async function createUser(name: string, password: string, permissions: object) {
   const { default: User } = await import("@/models/userModel");

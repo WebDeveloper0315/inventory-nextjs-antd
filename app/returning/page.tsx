@@ -65,8 +65,10 @@ function Returning() {
     setOpen(true);
   };
 
+  // antd's RangePicker passes `null` when the range is cleared, so the first
+  // parameter must accept null (it is NoUndefinedRangeValueType<Dayjs> | null).
   const handleDateRangeChange = async (
-    dates: [Dayjs | null, Dayjs | null],
+    dates: (Dayjs | null)[] | null,
     dateStrings: [string, string]
   ) => {
     if (dates && dates[0] && dates[1]) {

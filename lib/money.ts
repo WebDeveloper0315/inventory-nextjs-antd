@@ -25,10 +25,13 @@ export function toDecimal(v: MoneyInput): Decimal {
   return new Decimal(v.toString());
 }
 
-/** Convert a Decimal/number/string into a Decimal128 for storage. */
-export function toDecimal128(v: Decimal | number | string): Types.Decimal128 {
-  const d = v instanceof Decimal ? v : new Decimal(String(v));
-  return Types.Decimal128.fromString(d.toString());
+/**
+ * Convert a money value into a Decimal128 for storage.
+ * Accepts the same inputs as toDecimal (null/undefined/"" become 0), so values
+ * coming straight off an optional request field can be passed directly.
+ */
+export function toDecimal128(v: MoneyInput): Types.Decimal128 {
+  return Types.Decimal128.fromString(toDecimal(v).toString());
 }
 
 /**

@@ -6,13 +6,14 @@ import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { CheckboxValueType } from "antd/es/checkbox/Group";
 
 function AddUser() {
   // const {currentUser} = useSelector((state: any) => state.users)
   const dispatch = useDispatch();
 
-  const onChange = (checkedValues: CheckboxValueType[]) => {
+  // antd 5.29 removed the CheckboxValueType export; Checkbox.Group's onChange
+  // is now (checkedValue: T[]) => void, and these values are plain strings.
+  const onChange = (checkedValues: string[]) => {
     console.log("checked = ", checkedValues);
   };
 

@@ -1,0 +1,23 @@
+{
+  // Type-checks the dev-only code that the production build deliberately
+  // excludes: the test suite, the vitest config, and the migration/seed
+  // scripts. Run with:  npm run typecheck
+  //
+  // Keeping these out of tsconfig.json means `next build` never compiles
+  // vitest-dependent files — a test-only type error can't break a deploy.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "tests/**/*.ts",
+    "scripts/**/*.ts",
+    "vitest.config.ts",
+    "lib/**/*.ts",
+    "helpers/**/*.ts",
+    "models/**/*.ts",
+    "config/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

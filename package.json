@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
     "seed:admin": "tsx scripts/seedAdmin.ts",
     "migrate:money": "tsx scripts/migrateMoneyToDecimal.ts"
   },
