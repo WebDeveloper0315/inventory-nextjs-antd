@@ -24,8 +24,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# local env files (all env files that may contain secrets)
+.env
+.env.*
+.local.env
+!.env.example
+# uploaded product images
+/public/productImage
 
 # vercel
 .vercel

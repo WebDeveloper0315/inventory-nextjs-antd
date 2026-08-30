@@ -11,7 +11,8 @@ const recordingSchema = new mongoose.Schema(
       required: true,
     },
     pricePerUnit: {
-      type: Number,
+      // Stored as Decimal128 for exact money math (see lib/money.ts).
+      type: mongoose.Schema.Types.Decimal128,
       required: true,
     },
     units: {
@@ -39,6 +40,11 @@ const recordingSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Supports the reporting/history date-range queries, which filter by
+// productCode + mode and sort/range over createdAt.
+recordingSchema.index({ productCode: 1, mode: 1, createdAt: 1 });
+recordingSchema.index({ createdAt: 1 });
 
 // delete old model
 if (mongoose.models.recordings) {

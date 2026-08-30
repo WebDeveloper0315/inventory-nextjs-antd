@@ -1,25 +1,24 @@
 import { connectDB } from "@/config/dbConfig";
 import { validateJWT } from "@/helpers/validateJWT";
+import { errorResponse } from "@/helpers/auth";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 
-connectDB();
-
 export async function GET(request: NextRequest) {
   try {
-    // console.log("token", request.cookies.get('token'))
     const userId = await validateJWT(request);
-    // console.log(userId)
+    await connectDB();
+
     const user = await User.findById(userId).select("-password");
     if (!user) {
-      throw new Error("No user found");
+      return NextResponse.json({ message: "No user found" }, { status: 404 });
     }
 
     return NextResponse.json({
-      message: 'User data fetched successfully',
+      message: "User data fetched successfully",
       data: user,
     });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

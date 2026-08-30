@@ -54,9 +54,11 @@ function Returning() {
   const defaultEndDate = dayjs();
   const defaultDateRange: [Dayjs, Dayjs] = [defaultStartDate, defaultEndDate];
 
+  // The API treats a date-only range as inclusive of the whole end day, so the
+  // state holds the dates exactly as picked (no +1-day fudge).
   const [selectedDateRange, setSelectedDateRange] = useState<[Dayjs, Dayjs]>([
-    dayjs().subtract(1, "month"),
-    dayjs().add(1, "day"),
+    defaultStartDate,
+    defaultEndDate,
   ]);
 
   const showPopconfirm = () => {
@@ -70,10 +72,11 @@ function Returning() {
     if (dates && dates[0] && dates[1]) {
       // Handle the case when both start and end dates are not null
       const [start, end] = dates;
-      const oneDayLater = end.add(1, 'day');
-      console.log(end, oneDayLater);
-      setSelectedDateRange([start, oneDayLater]);
-      
+      // Send the dates exactly as picked. Previously this stored end+1day in
+      // state but sent the un-adjusted end, so the picker path excluded the end
+      // day while the initial-load path included it.
+      setSelectedDateRange([start, end]);
+
       await getSellingHistory({
         start: start.format("YYYY-MM-DD"),
         end: end.format("YYYY-MM-DD"),
@@ -267,14 +270,13 @@ function Returning() {
       title: "Date",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (createdAt: Date) => (
-        <span>
-          {new Date(createdAt)
-            .toLocaleString()
-            .replace(/T/, " ")
-            .replace(/\..+/, "")}
-        </span>
-      ),
+      // The API now returns ISO-8601, which dayjs parses reliably. (The old
+      // code fed a server-locale string to `new Date()`, whose parsing is
+      // implementation-defined and could yield "Invalid Date".)
+      render: (createdAt: string) => {
+        const d = dayjs(createdAt);
+        return <span>{d.isValid() ? d.format("YYYY-MM-DD HH:mm") : "—"}</span>;
+      },
     },
     {
       title: "Price Per Unit",

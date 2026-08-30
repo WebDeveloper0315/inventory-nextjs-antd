@@ -2,10 +2,16 @@ import { connectDB } from "@/config/dbConfig";
 import Location from "@/models/locationModel";
 import Stock from "@/models/stockModel";
 import { NextRequest, NextResponse } from "next/server";
-
-connectDB();
+import { requirePermission, errorResponse } from "@/helpers/auth";
 
 export async function POST(request: NextRequest) {
+  try {
+    await requirePermission(request, "query");
+    await connectDB();
+  } catch (error) {
+    return errorResponse(error);
+  }
+
   const body = await request.json();
   const { updating, locationMessage, selectedLocations, status } = body;
   // console.log('selected locations', selectedLocations)
@@ -57,9 +63,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest){
   try {
+    await requirePermission(request, "query");
+    await connectDB();
     const allLocations = await Location.find();
     return NextResponse.json({ locations: allLocations, success: true }, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

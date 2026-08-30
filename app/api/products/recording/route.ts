@@ -3,27 +3,31 @@ import { NextRequest, NextResponse } from "next/server";
 import Recording from "@/models/recordingModel";
 import Stock from "@/models/stockModel";
 import Location from "@/models/locationModel";
-import { validateJWT } from "@/helpers/validateJWT";
-connectDB();
+import { requirePermission, errorResponse } from "@/helpers/auth";
+import { parseOrThrow, recordingSchema } from "@/helpers/validate";
+import { toDecimal, toDecimal128 } from "@/lib/money";
+import { nowIso } from "@/lib/dates";
 
 export async function POST(request: NextRequest) {
   try {
-    await validateJWT(request);
-
-    
     const { searchParams } = new URL(request.url);
-    // console.log('search parameter', searchParams)
     const buying = searchParams.get("buying");
-    // console.log("buying parameter ", buying);
-
     const selling = searchParams.get("selling");
-    // console.log("selling parameter ", selling);
-
     const returning = searchParams.get("returning");
-    // console.log("returning parameter ", returning);
+
+    // The required permission depends on the operation: buying is part of the
+    // New Product flow, selling is Sold, and store/bin returns are Item Return.
+    const permission = buying
+      ? "newProduct"
+      : selling
+        ? "sold"
+        : "returning";
+    await requirePermission(request, permission);
+    await connectDB();
 
     const reqBody = await request.json();
-    // console.log("recording/route.ts", reqBody);
+    // Validate shape (throws 400 on invalid); keep using reqBody as-is after.
+    parseOrThrow(recordingSchema, reqBody);
 
     const locationString = reqBody.location; // Assuming this is the locations string from reqBody
     let locationInfo: string = locationString;
@@ -57,11 +61,18 @@ export async function POST(request: NextRequest) {
 
     if (stock) {
       if (buying) {
-        stock.pricePerUnit =
-          (stock.pricePerUnit * stock.stocks +
-            Number(reqBody.pricePerUnit) * Number(reqBody.units)) /
-          (stock.stocks + Number(reqBody.units));
-        stock.stocks += Number(reqBody.units);
+        // Weighted-average cost, computed exactly with Decimal and stored as
+        // Decimal128.
+        const newUnits = Number(reqBody.units) || 0;
+        const totalUnits = stock.stocks + newUnits;
+        if (totalUnits > 0) {
+          const weighted = toDecimal(stock.pricePerUnit)
+            .times(stock.stocks)
+            .plus(toDecimal(reqBody.pricePerUnit).times(newUnits))
+            .div(totalUnits);
+          stock.pricePerUnit = toDecimal128(weighted);
+        }
+        stock.stocks += newUnits;
       } else if (selling) {
         if (stock.stocks >= Number(reqBody.units))
           stock.stocks -= Number(reqBody.units);
@@ -78,7 +89,7 @@ export async function POST(request: NextRequest) {
       if(modeString !== 'lost'){
         const newStock = new Stock({
           productCode: reqBody.code,
-          pricePerUnit: reqBody.pricePerUnit,
+          pricePerUnit: toDecimal128(reqBody.pricePerUnit),
           stocks: reqBody.units,
           location: locationInfo,
         });
@@ -90,12 +101,12 @@ export async function POST(request: NextRequest) {
     const newRecording = new Recording({
       productCode: reqBody.code,
       mode: modeString,
-      pricePerUnit: reqBody.pricePerUnit,
+      pricePerUnit: toDecimal128(reqBody.pricePerUnit),
       units: reqBody.units,
       market: reqBody.market,
       location: locationInfo,
       taxes: tax,
-      createdTime: new Date().toLocaleString(),
+      createdTime: nowIso(),
     });
 
     await newRecording.save();
@@ -116,8 +127,8 @@ export async function POST(request: NextRequest) {
       { message: "Record Saved Successfully", success: true },
       { status: 201 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 

@@ -1,22 +1,24 @@
 import { connectDB } from "@/config/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Stock from "@/models/stockModel";
-connectDB();
+import { requirePermission, errorResponse } from "@/helpers/auth";
+import { toDecimal128 } from "@/lib/money";
 
 export async function POST(request: NextRequest) {
   try {
+    await requirePermission(request, "newProduct");
+    await connectDB();
     const reqBody = await request.json();
+    const price = toDecimal128(reqBody.pricePerUnit);
     const stock = await Stock.findOne({
       productCode: reqBody.code,
-      pricePerUnit: reqBody.pricePerUnit,
+      pricePerUnit: price,
     });
 
-    if (stock) {
-      console.log("stock-- ");
-    } else {
+    if (!stock) {
       const newStock = new Stock({
         productCode: reqBody.code,
-        pricePerUnit: reqBody.pricePerUnit,
+        pricePerUnit: price,
         stocks: reqBody.units,
       });
 
@@ -26,7 +28,7 @@ export async function POST(request: NextRequest) {
       { message: "Stock Record Saved Successfully", success: true },
       { status: 201 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

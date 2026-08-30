@@ -2,18 +2,21 @@ import { connectDB } from "@/config/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 import { validateJWT } from "@/helpers/validateJWT";
+import { requirePermission, errorResponse } from "@/helpers/auth";
+import { parseOrThrow, productRegisterSchema } from "@/helpers/validate";
+import { toDecimal128 } from "@/lib/money";
+import { nowIso } from "@/lib/dates";
 import Stock from "@/models/stockModel";
 import Recording from "@/models/recordingModel";
 import Location from "@/models/locationModel";
 
-connectDB();
-
 export async function POST(request: NextRequest) {
   try {
-    
-    const reqBody = await request.json();
-    // console.log(reqBody)
-    // check if user already exists
+    await requirePermission(request, "newProduct");
+    await connectDB();
+
+    const reqBody = parseOrThrow(productRegisterSchema, await request.json());
+    // check if the product already exists
     const product = await Product.findOne({ productCode: reqBody.code });
     if (product) {
       throw new Error("Product already exists");
@@ -23,8 +26,8 @@ export async function POST(request: NextRequest) {
     const newProduct = new Product({
       productCode: reqBody.code,
       productImage: reqBody.imagePath,
-      disposableUnits: reqBody.units, 
-      pricePerUnit: reqBody.pricePerUnit,
+      disposableUnits: reqBody.units,
+      pricePerUnit: toDecimal128(reqBody.pricePerUnit),
       location: reqBody.location,
       market: reqBody.market,
     });
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest) {
     } else {
       const newStock = new Stock({
         productCode: reqBody.code,
-        pricePerUnit: reqBody.pricePerUnit,
+        pricePerUnit: toDecimal128(reqBody.pricePerUnit),
         stocks: reqBody.units,
         location: reqBody.location,
       });
@@ -50,12 +53,12 @@ export async function POST(request: NextRequest) {
     const newRecording = new Recording({
       productCode: reqBody.code,
       mode: "buying",
-      pricePerUnit: reqBody.pricePerUnit,
+      pricePerUnit: toDecimal128(reqBody.pricePerUnit),
       units: reqBody.units,
       market: reqBody.market,
       taxes: reqBody.taxes,
       location: reqBody.location,
-      createdTime: new Date().toLocaleString(),
+      createdTime: nowIso(),
     });
 
     await newRecording.save();
@@ -74,14 +77,15 @@ export async function POST(request: NextRequest) {
       { message: "Product Created Successfully", success: true },
       { status: 201 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
     await validateJWT(request);
+    await connectDB();
     const { searchParams } = new URL(request.url);
 
     const productCode = searchParams.get("productCode");
@@ -97,7 +101,7 @@ export async function GET(request: NextRequest) {
       { message: "Selected Product does not exist", success: true },
       { status: 200 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

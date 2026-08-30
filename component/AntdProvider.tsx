@@ -23,33 +23,8 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
-  const [menuItems, setMenuItems] = useState([
-    {
-      name: " ",
-      path: " ",
-      icon: " " as React.ReactNode,
-    },
-    {
-      name: " ",
-      path: " ",
-      icon: " " as React.ReactNode,
-    },
-    {
-      name: " ",
-      path: " ",
-      icon: " " as React.ReactNode,
-    },
-    {
-      name: " ",
-      path: " ",
-      icon: " " as React.ReactNode,
-    },
-    {
-      name: " ",
-      path: " ",
-      icon: " " as React.ReactNode,
-    },
-  ]);
+  type MenuItem = { name: string; path: string; icon: React.ReactNode };
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   const pathname = usePathname();
 
@@ -58,75 +33,34 @@ function AntdProvider({ children }: { children: React.ReactNode }) {
       dispatch(SetLoading(true));
 
       const response = await axios.get("/api/users/currentuser");
-      let pos: number = 0;
+      const user = response.data.data;
+      dispatch(SetCurrentUser(user));
 
-      const isNewProduct = response.data.data.newProduct === true;
-      const isReturning = response.data.data.returning === true;
-      const isSold = response.data.data.sold === true;
-      const isQuery = response.data.data.query === true;
-      const isAddUser = response.data.data.addUser === true;
-      dispatch(SetCurrentUser(response.data.data));
-
-      // console.log('isSold', isSold)
-      if (isNewProduct) {
-        const tempMenuItems = menuItems;
-        tempMenuItems[pos].name = "New Product";
-        tempMenuItems[pos].path = "/newproduct";
-        tempMenuItems[pos].icon = <CgAdd />;
-        setMenuItems(tempMenuItems);
-        pos = pos + 1;
+      // Build the menu immutably from the user's permissions. (The old code
+      // mutated the state array in place and re-set the same reference, which
+      // is a React anti-pattern that made rendering order-dependent.)
+      const nextMenuItems: MenuItem[] = [];
+      if (user.newProduct === true) {
+        nextMenuItems.push({ name: "New Product", path: "/newproduct", icon: <CgAdd /> });
       }
-      // console.log(pos)
-      if (isSold) {
-        const tempMenuItems = menuItems;
-        tempMenuItems[pos].name = "Sold";
-        tempMenuItems[pos].path = "/sold";
-        tempMenuItems[pos].icon = <MdSell />;
-        setMenuItems(tempMenuItems);
-        pos = pos + 1;
+      if (user.sold === true) {
+        nextMenuItems.push({ name: "Sold", path: "/sold", icon: <MdSell /> });
       }
-
-      if (isReturning) {
-        const tempMenuItems = menuItems;
-        tempMenuItems[pos].name = "Item Return";
-        tempMenuItems[pos].path = "/returning";
-        tempMenuItems[pos].icon = <RiRefund2Fill />;
-        setMenuItems(tempMenuItems);
-        pos = pos + 1;
+      if (user.returning === true) {
+        nextMenuItems.push({ name: "Item Return", path: "/returning", icon: <RiRefund2Fill /> });
       }
-      // console.log(pos)
-      if (isQuery) {
-        const tempMenuItems = menuItems;
-        tempMenuItems[pos].name = "Query";
-        tempMenuItems[pos].path = "/query";
-        tempMenuItems[pos].icon = <FaSellsy />;
-        setMenuItems(tempMenuItems);
-        pos = pos + 1;
+      if (user.query === true) {
+        nextMenuItems.push({ name: "Query", path: "/query", icon: <FaSellsy /> });
       }
-      if (isAddUser) {
-        const tempMenuItems = menuItems;
-        tempMenuItems[pos].name = "Add User";
-        tempMenuItems[pos].path = "/adduser";
-        tempMenuItems[pos].icon = <AiOutlineUserAdd />;
-        setMenuItems(tempMenuItems);
-        pos = pos + 1;
+      if (user.addUser === true) {
+        nextMenuItems.push({ name: "Add User", path: "/adduser", icon: <AiOutlineUserAdd /> });
       }
-
-      if (pos < 5) {
-        while (pos < 5) {
-          const tempMenuItems = menuItems;
-          tempMenuItems[pos].name = "";
-          tempMenuItems[pos].path = "";
-          tempMenuItems[pos].icon = "";
-          setMenuItems(tempMenuItems);
-          pos = pos + 1;
-        }
-      }
+      setMenuItems(nextMenuItems);
     } catch (error: any) {
       router.push("/login");
       // console.log(error);
       message.error(
-        error.response.data.message || "Error during getting the current user"
+        error?.response?.data?.message || "Error during getting the current user"
       );
     } finally {
       dispatch(SetLoading(false));

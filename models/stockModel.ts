@@ -11,7 +11,8 @@ const stockSchema = new mongoose.Schema(
       required: true,
     },
     pricePerUnit: {
-      type: Number,
+      // Stored as Decimal128 for exact money math (see lib/money.ts).
+      type: mongoose.Schema.Types.Decimal128,
       required: true,
     },
     stocks: {

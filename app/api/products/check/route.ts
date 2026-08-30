@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 import Stock from "@/models/stockModel";
 import Location from "@/models/locationModel";
-
-connectDB();
+import { validateJWT } from "@/helpers/validateJWT";
+import { errorResponse } from "@/helpers/auth";
+import { toNumber } from "@/lib/money";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
@@ -13,6 +14,8 @@ export async function GET(request: NextRequest) {
   const locationQuery = request.nextUrl.searchParams.get("location");
   // console.log("location Code: ", locationQuery);
   try {
+    await validateJWT(request);
+    await connectDB();
     // Find the product in MongoDB using the product code
     if(code){
       const product = await Product.findOne({ productCode: code });
@@ -35,7 +38,7 @@ export async function GET(request: NextRequest) {
       const stockData = allData.map((oneData) => {
         return {
           location: oneData.location,
-          pricePerUnit: oneData.pricePerUnit,
+          pricePerUnit: toNumber(oneData.pricePerUnit),
           stocks: oneData.stocks,
         };
       });
@@ -66,7 +69,7 @@ export async function GET(request: NextRequest) {
         return {
           key: index + 1,
           productCode: oneData.productCode,
-          pricePerUnit: oneData.pricePerUnit,
+          pricePerUnit: toNumber(oneData.pricePerUnit),
           stocks: oneData.stocks,
           location: oneData.location,
         };
@@ -92,14 +95,16 @@ export async function GET(request: NextRequest) {
           }
         );
       }
-      
+
 
     }
-    
-  } catch (error: any) {
+
+    // No product code and no (matching) location supplied.
     return NextResponse.json(
-      { message: "Something Went Wrong" },
-      { status: 500 }
+      { message: "No data for the given query", data: "" },
+      { status: 200 }
     );
+  } catch (error) {
+    return errorResponse(error);
   }
 }
