@@ -188,6 +188,50 @@ returns a specific **400**) and only then connects.
 
 Current totals: **62 passing, 15 skipped without a database** (77 with one).
 
+### Next 16.3 warnings cleared
+
+Running `npm run dev` on Next 16.3.3 surfaced three things, now fixed.
+
+**1. `Unrecognized key(s) in object: 'eslint'` — my mistake.** I had added
+`eslint: { ignoreDuringBuilds: true }` to `next.config.js`. Next 16 removed
+`next lint` *and* the `eslint` config key along with it, so that key is now
+invalid. Removed.
+
+**2. `next lint` no longer exists**, so the `"lint": "next lint"` script would
+have failed the moment you ran it (and in CI). Linting now goes through the
+ESLint CLI:
+- `"lint": "eslint ."`
+- new `eslint.config.mjs` (ESLint 9 **flat config**, which is what
+  `eslint-config-next@16` requires) replacing `.eslintrc.json`
+- bumped `eslint-config-prettier` to `^10` — the `eslint-config-prettier/flat`
+  entry point the flat config imports doesn't exist in v9
+Verified: `eslint .` loads the config and runs clean.
+
+**3. `middleware` is deprecated → renamed to `proxy`.** `middleware.ts` is now
+`proxy.ts`, with the exported function renamed `middleware` → `proxy`. The
+`export const config = { matcher }` block is unchanged, and so is all the auth
+logic — this is purely the Next 16 file-convention rename.
+
+While migrating I noted a caveat from the Next docs worth recording: Server
+Functions aren't separate routes, so a matcher change can silently drop proxy
+coverage. That's exactly why every route handler does its own
+`requireUser`/`requirePermission` check rather than trusting the proxy alone —
+the defence-in-depth here is deliberate, not redundant.
+
+> **Two files must be deleted by hand** (remote tooling can write files but not
+> delete them):
+> ```bash
+> rm middleware.ts .eslintrc.json
+> ```
+> Delete `middleware.ts` **after** confirming `proxy.ts` is present — leaving
+> both would keep the deprecated convention active.
+
+Also seen in that dev output, and *not* a problem to fix:
+- Next auto-reconfigured `tsconfig.json` (added `.next/dev/types/**/*.ts`, set
+  `jsx: react-jsx`). That's expected and correct — leave it.
+- `Slow filesystem detected … took 307ms`. The project lives on
+  `/run/media/...`, an external/removable drive. Purely a dev-speed warning;
+  moving the repo to a local disk would make `next dev` noticeably faster.
+
 ## Still open (from the report)
-- **Remaining Next 16 codemods** — `npx @next/codemod@canary upgrade latest` for anything not already handled.
 - **Frontend component tests** — the API surface is covered now; the React components are not.

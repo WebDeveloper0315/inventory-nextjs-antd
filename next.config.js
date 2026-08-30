@@ -10,11 +10,9 @@ const nextConfig = {
     // ever serve remote images. Local /public images need no config.
     remotePatterns: [],
   },
-  eslint: {
-    // Don't let a lint hiccup fail the production build. Run `npm run lint`
-    // (and CI) separately for style enforcement.
-    ignoreDuringBuilds: true,
-  },
+  // NOTE: no `eslint` key here — Next 16 removed `next lint` and the
+  // `eslint` config option along with it. Linting runs via the ESLint CLI
+  // (`npm run lint`, configured in eslint.config.mjs), separate from the build.
 };
 
 module.exports = nextConfig;

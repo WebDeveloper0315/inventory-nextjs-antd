@@ -6,7 +6,7 @@ const PUBLIC_PAGES = new Set<string>(["/login"]);
 // API routes anyone may call without a session.
 const PUBLIC_APIS = new Set<string>(["/api/users/login", "/api/users/logout"]);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isApi = pathname.startsWith("/api");
   const isPublic = isApi
